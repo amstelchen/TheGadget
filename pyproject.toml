@@ -1,0 +1,53 @@
+[tool.poetry]
+name = "thegadget"
+version = "0.1.0"
+description = "A strategic simulation, written in Python."
+authors = ["Michael John <michael.john@gmx.at>"]
+license = "MIT"
+readme = "README.md"
+include = [
+    "thegadget/locales/**/LC_MESSAGES/*.mo",
+    "thegadget/resources/*",
+    "thegadget/database/*"
+]
+
+[tool.poetry.scripts]
+thegadget = 'thegadget.__main__:main'
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pygame = "^2.4.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.urls]
+homepage = "https://github.com/amstelchen/TheGadget"
+repository = "https://github.com/amstelchen/TheGadget"
+documentation = "https://github.com/amstelchen/TheGadget"
+
+[tool.ruff]
+line-length = 120
+ignore = [
+    "F401",
+    "F403",
+    "F405",
+    "F841",
+    "E501",
+    "E701",
+    "E702",
+]
+
+[tool.flake8]
+ignore = [
+    "F401",
+    "F403",
+    "F405",
+    "F841",
+    "E501",
+    "E701",
+    "E702",
+]

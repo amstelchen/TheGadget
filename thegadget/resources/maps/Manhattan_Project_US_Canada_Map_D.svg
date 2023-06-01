@@ -1,0 +1,27 @@
+<svg id="locations" enable-background="new 0 0 1212.006 769.854" version="1.1" viewBox="0 0 1212 769.85" xmlns="http://www.w3.org/2000/svg">
+	<g fill="#fff" stroke="#000" stroke-width="5" id="big_circles">
+		<circle cx="807.8" cy="467.59" r="15.387"/>
+		<circle cx="346.27" cy="445.09" r="15.387"/>
+		<circle cx="171.39" cy="107.32" r="15.387"/>
+	</g>
+	<g fill="#fff" stroke="#000" stroke-width="2.5" id="small_circles">
+		<circle cx="51.656" cy="296.04" r="10.365"/>
+		<circle cx="131.02" cy="400.81" r="10.365"/>
+		<circle cx="239.91" cy="281.64" r="10.365"/>
+		<circle cx="287.79" cy="377.36" r="10.365"/>
+		<circle cx="351.41" cy="510.81" r="10.365"/>
+		<circle cx="327.86" cy="364.74" r="10.365"/>
+		<circle cx="617.98" cy="304" r="10.365"/>
+		<circle cx="724.08" cy="314.4" r="10.365"/>
+		<circle cx="770.12" cy="542.45" r="10.365"/>
+		<circle cx="923.15" cy="267.5" r="10.365"/>
+		<circle cx="950.32" cy="370.38" r="10.364"/>
+		<circle cx="220.46" cy="34.061" r="10.365"/>
+		<circle cx="918.22" cy="175.54" r="10.364"/>
+		<circle cx="740.16" cy="373.47" r="10.365"/>
+		<circle cx="899" cy="374.68" r="10.365"/>
+		<circle cx="809.22" cy="347.08" r="10.365"/>
+		<circle cx="668.95" cy="412.35" r="10.365"/>
+	</g>
+	<circle cx="950.32" cy="370.38" r="6.608" id="fill_dc"/>
+</svg>
