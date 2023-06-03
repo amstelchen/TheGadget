@@ -74,19 +74,21 @@ class Game():
             "alarm": "60, 15, 1"
         }
 
+        logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
+
+        self.loadDefaults()
+
         data_file = os.path.join(os.path.dirname(__file__), 'resources', 'database', PROGNAME + ".db")
         loader = Data(data_file)
         dates_data = loader.load_table_data("Dates")
+        people_data = loader.load_table_data("People")
         places_data = loader.load_table_data("Places")
+        logging.debug(f"Loaded {len(dates_data)} dates, {len(people_data)} people, {len(places_data)} places.")
         #print(dates_data)
 
         # Print the loaded data
         #for row in dates_data:
         #    print(row)
-
-        logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
-
-        self.loadDefaults()
 
 #        self.window.bind("<F11>", self.quitNewYearsClock)
 #        self.window.bind("<Escape>", self.quitNewYearsClock)
@@ -258,6 +260,7 @@ class Game():
                     for date_event in dates_data:
                         #print(type(date_event[1]))
                         #print(type(current_date))
+                        #if date_event := [date_event for date_event in dates_data if current_date.strftime("%Y-%m-%d") in date_event]:
                         if current_date.strftime("%Y-%m-%d") == date_event[1]:
                             logging.debug("Event found!")
                             #self.text_hist = font.render(f"Current Date: {date_event[1]}\n\n{date_event[2]}", True, (0, 0, 0), pygame.color.Color("mediumaquamarine"))
