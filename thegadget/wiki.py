@@ -34,7 +34,7 @@ def query_name(name):
         if result is None:
             return "No results found for this name."
         else:
-            print(result['extract'])
+            logging.debug(result['extract'])
             summary = result['extract']
             updater = Data(os.path.join(os.path.dirname(__file__), 'resources', 'database', PROGNAME + ".db"))
             updater.update_table_data("People", "description = '" + result['extract'].replace("\'", "''") + "' WHERE name = '" + name + "'")
@@ -42,11 +42,11 @@ def query_name(name):
     except (AttributeError, IndexError):
         return None
 
-    if os.path.isfile(os.path.join(os.path.dirname(__file__), 'resources', 'images', name + ".png")):
+    #if os.path.isfile(os.path.join(os.path.dirname(__file__), 'resources', 'images', name + ".png")):
         logging.info(f"File {name + '.png'} already exists.")
-        return None
+    #    return None
 
-    url = 'https://en.wikipedia.org/wiki/' + name
+    # url = 'https://en.wikipedia.org/wiki/' + name
     url = 'https://en.wikipedia.org/api/rest_v1/page/media-list/' + name.replace(' ', '_')
 
     try:
@@ -68,13 +68,32 @@ def query_name(name):
         else:
             #image_url = "https:" + result.find("img").attrs.get("src")
             image_url = 'https:' + result['items'][0]['srcset'][0]['src']
+            image_title = '' + result['items'][0]['title']
             response = s.get(image_url) # , headers)
             logging.debug(f"{response.status_code} {response.reason}")
             with open(os.path.join(os.path.dirname(__file__), 'resources', 'images', name + ".png"), "wb") as f:
                 f.write(response.content)
             logging.debug(f"{len(response.content)} bytes written")
 
-            return summary # result.get_text(strip=True)
+            # return summary # result.get_text(strip=True)
+    except (AttributeError, IndexError):
+        return None
+
+    url = 'https://en.wikipedia.org/w/api.php?action=query&format=json&iiextmetadatafilter=LicenseShortName&iiprop=extmetadata|url&prop=imageinfo&titles=' + image_title
+
+    try:
+        response = requests.get(url, api_headers)
+        response.raise_for_status()  # Check for HTTP errors
+    except requests.exceptions.RequestException as err:
+        logging.error(f"An error occurred: {err}")
+        return None
+
+    try:
+        result = response.json()
+        if result is None:
+            return "No results found for this name."
+        else:
+            logging.info(result['query']['pages']['-1']['imageinfo'][0]['extmetadata']['LicenseShortName']['value'])
     except (AttributeError, IndexError):
         return None
 
@@ -87,7 +106,9 @@ def main():
     logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
     
     loader = Data(os.path.join(os.path.dirname(__file__), 'resources', 'database', PROGNAME + ".db"))
-    people_data = loader.load_table_data("People", "WHERE description IS NULL")
+    # people_data = loader.load_table_data("People", "WHERE description IS NULL")
+    # for testing
+    people_data = loader.load_table_data("People", "WHERE person_id > 60")
 
     # Generate the names
     name_list =  []
