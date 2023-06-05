@@ -21,44 +21,7 @@ import cairosvg
 #from intro import Intro
 
 from .__version__ import PROGNAME, FULLNAME, VERSION, AUTHOR, DESC, __appname__, __description_short__, __studioname__, __controls__
-
-
-class Data():
-    def __init__(self, db_file):
-        self.db_file = db_file
-
-    def load_table_data(self, table_name):
-        conn = sqlite3.connect(self.db_file)
-        cursor = conn.cursor()
-
-        cursor.execute(f"SELECT * FROM {table_name}")
-        data = cursor.fetchall()
-
-        conn.close()
-
-        return data
-
-
-class SVG():
-    def __init__(self, places):
-        self.places = places
-
-    def create_markup(self):
-        markup = """<svg viewBox="0 0 1212 769.85" xmlns="http://www.w3.org/2000/svg">
-    <style>
-        .small {
-            font: bold 16px sans-serif;
-            dominant-baseline: central;
-        }
-    </style>
-"""
-        for place in self.places:
-            if place[4] is not None:
-                place_name = place[1]
-                cx = place[4]
-                cy = place[5]
-                markup += f'<text x="{ cx }" y="{ cy }" dx="25" class="small">{place[1]}</text>'
-        return markup + "</svg>"
+from .utils import Data, SVG
 
 
 class Game():
@@ -68,10 +31,10 @@ class Game():
             "window_height": 769,
             "fg": "white",
             "bg": "black",
-            "fontface": "Courier",
+            "fontface": "Noto sans",
+            "fontface_mono": "Noto sans Mono",
             "fontsize": "50",
-            "screensaver": 1,
-            "alarm": "60, 15, 1"
+            "fullscreen": 1
         }
 
         logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
@@ -115,11 +78,13 @@ class Game():
 
         self.screen.fill(pygame.color.Color("white"))  # Fill the window with black color
 
-        font_big = pygame.font.SysFont('Noto sans', 36)
-        font_med = pygame.font.SysFont('Noto sans', 28)
-        font_sml = pygame.font.SysFont('Noto sans', 24)
-        font_med_serif = pygame.font.SysFont('Noto sans Mono', 28)
-        font_sml_serif = pygame.font.SysFont('Noto sans Mono', 24)
+        ff = self.config['fontface']
+        ff_mono = self.config['fontface_mono']
+        font_big = pygame.font.SysFont(ff, 36)
+        font_med = pygame.font.SysFont(ff, 28)
+        font_sml = pygame.font.SysFont(ff, 24)
+        font_med_serif = pygame.font.SysFont(ff_mono, 28)
+        font_sml_serif = pygame.font.SysFont(ff_mono, 24)
 
         svg_file_map = os.path.join(os.path.dirname(__file__), "resources", "maps", "Manhattan_Project_US_Canada_Map_C.svg")
         self.surface_map = pygame.image.load(svg_file_map)
@@ -258,30 +223,31 @@ class Game():
                         #print(type(dates_data))
 
                     for date_event in dates_data:
-                        #print(type(date_event[1]))
-                        #print(type(current_date))
-                        #if date_event := [date_event for date_event in dates_data if current_date.strftime("%Y-%m-%d") in date_event]:
                         if current_date.strftime("%Y-%m-%d") == date_event[1]:
-                            logging.debug("Event found!")
-                            #self.text_hist = font.render(f"Current Date: {date_event[1]}\n\n{date_event[2]}", True, (0, 0, 0), pygame.color.Color("mediumaquamarine"))
+                            logging.debug("Date event found!")
                             self.text_hist = f"{date_event[1]}\n{date_event[2]}"
                             self.subtext = f"{date_event[3]}"
-                            #self.rect_hist = self.text_hist.get_rect(center=(self.window.get_width() // 2, self.window.get_height() // 2))
-                            #self.window.blit(self.text_hist, self.rect_hist)
                             self.newsurf = pygame.Surface((500, 500))
-                            #newsurf.blit(spritesheet, (0, 0), (posX, posY, newsurf.getWidth(), newsurf.getHeight()))
-                            self.newsurf.fill(pygame.color.Color("mediumaquamarine"))
+                            self.newsurf.fill(Color("mediumaquamarine"))
                             self.blit_text(self.newsurf, self.text_hist, (25, 25), font_med, color=Color("black"))
                             self.blit_text(self.newsurf, self.subtext, (25, 150), font_sml, color=Color("black"))
                             self.screen.blit(self.newsurf, (100, 100))
-                            #pygame.display.flip()
-                            #break
-                            #running = False
                         else:
-                            #self.newsurf.fill(pygame.color.Color("white"))
-                            #self.screen.fill((255,255,255))
                             pygame.display.flip()
-                        #self.updateDisplay()
+                        # self.updateDisplay()
+
+                    for people_event in people_data:
+                        if current_date.strftime("%Y-%m-%d") == people_event[5]:
+                            logging.debug("Person event found!")
+                            self.text_hist = f"{people_event[5]}\n{people_event[1]} joined."
+                            self.subtext = f"{people_event[4]}"
+                            self.newsurf = pygame.Surface((500, 500))
+                            self.newsurf.fill(Color("mediumaquamarine"))
+                            self.blit_text(self.newsurf, self.text_hist, (25, 25), font_med, color=Color("black"))
+                            self.blit_text(self.newsurf, self.subtext, (25, 150), font_sml, color=Color("black"))
+                            self.screen.blit(self.newsurf, (800, 100))
+                        else:
+                            pygame.display.flip()
 
             # Update game logic
 

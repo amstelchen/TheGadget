@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "thegadget"
-version = "0.1.0"
+version = "0.2.0"
 description = "A strategic simulation, written in Python."
 authors = ["Michael John <michael.john@gmx.at>"]
 license = "MIT"
@@ -17,8 +17,13 @@ thegadget = 'thegadget.__main__:main'
 [tool.poetry.dependencies]
 python = "^3.8"
 pygame = "^2.4.0"
+python-gettext = "^5.0"
 
 [tool.poetry.dev-dependencies]
+
+[tool.poetry.group.dev.dependencies]
+beautifulsoup4 = "^4.12.2"
+python-gettext = "^5.0"
 
 [build-system]
 requires = ["poetry-core"]

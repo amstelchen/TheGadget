@@ -1,123 +1,107 @@
 import os
+import time
 import requests
+import logging
 from bs4 import BeautifulSoup
 #from game import Data
 from __version__ import PROGNAME
+from utils import Data
+
+headers = {
+    'User-Agent': 'ImageScrapingBot/0.1.0 (amstelchen@gmx.at) bot',
+    'Accept-Encoding': 'gzip'
+}
+api_headers = {
+    'Accept-Encoding': 'gzip',
+    'Accept': 'application/json; charset=utf-8; profile="https://www.mediawiki.org/wiki/Specs/Media/1.3.1"'
+}
+
+s = requests.Session()
+s.headers.update(headers)
 
 def query_name(name):
-    url = 'https://en.wikipedia.org/wiki/' + name
 
+    url = 'https://en.wikipedia.org/api/rest_v1/page/summary/' + name.replace(' ', '_')
     try:
-        response = requests.get(url)
+        response = requests.get(url, api_headers)
         response.raise_for_status()  # Check for HTTP errors
     except requests.exceptions.RequestException as err:
-        print(f"An error occurred: {err}")
+        logging.error(f"An error occurred: {err}")
         return None
 
     try:
-        soup = BeautifulSoup(response.text, 'html.parser')
+        result = response.json()
+        if result is None:
+            return "No results found for this name."
+        else:
+            print(result['extract'])
+            summary = result['extract']
+            updater = Data(os.path.join(os.path.dirname(__file__), 'resources', 'database', PROGNAME + ".db"))
+            updater.update_table_data("People", "description = '" + result['extract'].replace("\'", "''") + "' WHERE name = '" + name + "'")
+
+    except (AttributeError, IndexError):
+        return None
+
+    if os.path.isfile(os.path.join(os.path.dirname(__file__), 'resources', 'images', name + ".png")):
+        logging.info(f"File {name + '.png'} already exists.")
+        return None
+
+    url = 'https://en.wikipedia.org/wiki/' + name
+    url = 'https://en.wikipedia.org/api/rest_v1/page/media-list/' + name.replace(' ', '_')
+
+    try:
+        response = requests.get(url, api_headers)
+        response.raise_for_status()  # Check for HTTP errors
+    except requests.exceptions.RequestException as err:
+        logging.error(f"An error occurred: {err}")
+        return None
+
+    try:
+        #soup = BeautifulSoup(response.text, 'html.parser')
 
         #result = soup.find('td', {'class': 'infobox-image'})
-        result = soup.find('table', {'class': 'infobox'})
+        #result = soup.find('table', {'class': 'infobox'})
+        result = response.json()
 
         if result is None:
             return "No results found for this name."
         else:
-            image_url = "https:" + result.find("img").attrs.get("src")
-            response = requests.get(image_url)
-            with open(name + ".png", "wb") as f:
+            #image_url = "https:" + result.find("img").attrs.get("src")
+            image_url = 'https:' + result['items'][0]['srcset'][0]['src']
+            response = s.get(image_url) # , headers)
+            logging.debug(f"{response.status_code} {response.reason}")
+            with open(os.path.join(os.path.dirname(__file__), 'resources', 'images', name + ".png"), "wb") as f:
                 f.write(response.content)
+            logging.debug(f"{len(response.content)} bytes written")
 
-            return result.get_text(strip=True)
-    except AttributeError:
+            return summary # result.get_text(strip=True)
+    except (AttributeError, IndexError):
         return None
 
 def save_results_to_file(results):
-    with open('name_results.txt', 'a+') as file:  # Change 'w' to 'a+' for appending
-        for imei, result in results.items():
-            file.write(f"Name: {imei}\nResult: {result}\n\n")
+    with open('name_results.log', 'w') as file:  # Change 'w' to 'a+' for appending
+        for name, result in results.items():
+            file.write(f"Name: {name}\nResult: {result}\n\n")
 
 def main():
-    #loader = Data(os.path.join(os.path.dirname(__file__), 'resources', 'database', PROGNAME + ".db"))
-    #people_data = loader.load_table_data("People")
+    logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
+    
+    loader = Data(os.path.join(os.path.dirname(__file__), 'resources', 'database', PROGNAME + ".db"))
+    people_data = loader.load_table_data("People", "WHERE description IS NULL")
 
-    name_list = ["J. Robert Oppenheimer",
-"General Leslie R. Groves",
-"Enrico Fermi",
-"Niels Bohr",
-"Richard Feynman",
-"Edward Teller",
-"Ernest Lawrence",
-"Vannevar Bush",
-"Klaus Fuchs",
-"Arthur Compton",
-"Carl David Anderson",
-"Charles Lauritsen",
-"Chien-Shiung Wu",
-"Cyril Smith",
-"David Bohm",
-"Donald Hornig",
-"Dorothy Hodgkin",
-"Dorothy McKibbin",
-"Edwin McMillan",
-"Elizabeth Graves",
-"Elizabeth Rona",
-"Emilio Segrè",
-"Eugene Wigner",
-"Franklin Matthias",
-"Frank Oppenheimer",
-"George Gamow",
-"George Kistiakowsky",
-"George P. Thomson",
-"Hans Bethe",
-"Harold Urey",
-"Hugh Bradner",
-"Isidor Isaac Rabi",
-"James Chadwick",
-"James Franck",
-"Joan Hinton",
-"John Archibald Wheeler",
-"John Manley",
-"John von Neumann",
-"Joseph Rotblat",
-"Karl Cohen",
-"Karl Compton",
-"Katharine Way",
-"Kenneth Bainbridge",
-"Leona Woods",
-"Leo Szilard",
-"Leó Szilárd",
-"Leslie Groves",
-"Lise Meitner",
-"Luis Alvarez",
-"Maria Goeppert-Mayer",
-"Melba Phillips",
-"Norman Ramsey",
-"Norris Bradbury",
-"Otto Frisch",
-"Philip Abelson",
-"Philip Morrison",
-"Richard Garwin",
-"Richard Tolman",
-"Robert Serber",
-"Robert Wilson",
-"Rudolf Peierls",
-"Samuel Allison",
-"Samuel Goudsmit",
-"Seth Neddermeyer",
-"Stanislaw Ulam",
-"Thomas Farrell",
-"Tsung-Dao Lee",
-"Vera Rubin",
-"William Sterling Parsons",]  # Generate the names
+    # Generate the names
+    name_list =  []
+    for person_name in people_data:
+        name_list.append(person_name[1])
 
     results = {}
 
-    for name in name_list:
-        print(f"Querying name: {name}")
+    for name in sorted(name_list):
+        logging.info(f"Querying name: {name}")
         result = query_name(name)
         if result is not None:
             results[name] = result
+        # time.sleep(0.5)
 
     save_results_to_file(results)
 
