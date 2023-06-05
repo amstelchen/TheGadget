@@ -7,8 +7,13 @@ license = "MIT"
 readme = "README.md"
 include = [
     "thegadget/locales/**/LC_MESSAGES/*.mo",
-    "thegadget/resources/*",
-    "thegadget/database/*"
+    "thegadget/resources/database/*",
+    "thegadget/resources/images/*",
+    "thegadget/resources/maps/*",
+    "thegadget/resources/music/*",
+]
+exclude = [
+    "thegadget/resources/unused/*",
 ]
 
 [tool.poetry.scripts]
