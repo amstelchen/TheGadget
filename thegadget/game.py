@@ -2,6 +2,7 @@ import sys
 import os
 from pathlib import Path
 import pygame
+from pygame.image import load
 from pygame.locals import Color
 import datetime
 import logging
@@ -239,13 +240,19 @@ class Game():
                     for people_event in people_data:
                         if current_date.strftime("%Y-%m-%d") == people_event[5]:
                             logging.debug("Person event found!")
-                            self.text_hist = f"{people_event[5]}\n{people_event[1]} joined."
+                            self.text_hist = f"{people_event[5]}\n{people_event[1]} joined the Manhattan Project."
                             self.subtext = f"{people_event[4]}"
-                            self.newsurf = pygame.Surface((500, 500))
+                            self.newsurf = pygame.Surface((500, 800))
                             self.newsurf.fill(Color("mediumaquamarine"))
-                            self.blit_text(self.newsurf, self.text_hist, (25, 25), font_med, color=Color("black"))
-                            self.blit_text(self.newsurf, self.subtext, (25, 150), font_sml, color=Color("black"))
-                            self.screen.blit(self.newsurf, (800, 100))
+                            charRect = pygame.Rect((270,10),(10, 10))
+                            charImage = load(os.path.join(os.path.dirname(__file__), 'resources', 'images', people_event[1] + '.png'))
+                            ratio = charImage.get_height()/charImage.get_width()
+                            charImage = pygame.transform.scale(charImage, (220, 220 * ratio))
+                            charImage = charImage.convert()
+                            self.newsurf.blit(charImage, charRect)
+                            self.blit_text(self.newsurf, self.text_hist, (25, 25), font_sml, color=Color("black"))
+                            self.blit_text(self.newsurf, self.subtext, (25, 280), font_sml, color=Color("black"))
+                            self.screen.blit(self.newsurf, (self.screen.get_width() - 600, 100))
                         else:
                             pygame.display.flip()
 
