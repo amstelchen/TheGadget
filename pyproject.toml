@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "thegadget"
-version = "0.2.0"
+version = "0.3.0"
 description = "A strategic simulation, written in Python."
 authors = ["Michael John <michael.john@gmx.at>"]
 license = "MIT"
