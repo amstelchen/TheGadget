@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version=1.0
+Name=The Gadget
+GenericName=A strategic simulation
+Type=Application
+Comment=A strategic simulation, written in Python
+Comment[de]=Ein Stragetie-Simulator, geschrieben in Python
+Icon=TheGadget
+Exec=/usr/bin/python -m thegadget
+Terminal=false
+StartupNotify=false
+StartupWMClass=thegadget
+Keywords=game;
+Categories=Game;
