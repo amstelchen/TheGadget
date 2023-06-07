@@ -26,6 +26,8 @@ python-gettext = "^5.0"
 pygame-ce = "^2.2.1"
 pygame-gui = "^0.6.9"
 cairosvg = "^2.7.0"
+# removed due to incompatibilities: pygame-menu = "^4.4.3"
+pygame-menu-ce = "^4.4.3"
 
 [tool.poetry.dev-dependencies]
 

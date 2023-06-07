@@ -17,12 +17,14 @@ from matplotlib.colorbar import ColorbarBase
 import matplotlib.backends.backend_agg as agg
 import sqlite3
 import io
-import cairosvg
 
 from .__version__ import PROGNAME, FULLNAME, VERSION, AUTHOR, DESC, __appname__, __description_short__, __studioname__, __controls__
 from .utils import Data, SVG
 from .gui import GUIWindow, StatusWindow, EventWindow, PersonWindow
 from pygame_gui.elements import UIImage
+os.environ['PATH'] += ";" + os.path.join(os.path.dirname(__file__), "resources", "dlls")
+
+import cairosvg
 
 resources_path = os.path.join(os.path.dirname(__file__), 'resources')
 

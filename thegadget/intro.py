@@ -1,8 +1,12 @@
 import os
+import sys
 import logging
 
 import pygame
-import pygame_menu
+# hack for better fonts on linux
+if sys.platform == 'linux':
+    import pygame_menu
+
 from pygame.locals import Color
 
 from .__version__ import __appname__, __description_short__, __studioname__
@@ -53,13 +57,19 @@ class Intro():
         imgStudio = largefont.render(__studioname__, True, Color("white"))
         imgPresents = mediumfont.render(("presents"), True, Color("white"))
 
-        font_riesig = pygame.font.Font(pygame_menu.font.FONT_OPEN_SANS_BOLD, 120)
+        if sys.platform == 'linux':
+            font_riesig = pygame.font.Font(pygame_menu.font.FONT_OPEN_SANS_BOLD, 120)
+        elif sys.platform == 'win32':
+            font_riesig = pygame.font.SysFont("Open Sans bold", 120)
         text_riesig = font_riesig.render(f" {__appname__} ", True, Color("white"), Color("darkolivegreen"))
 
         box1 = pygame.Surface((text_riesig.get_width() + 100, text_riesig.get_height()))
         box1.blit(text_riesig, (0, 0))
 
-        font_gross = pygame.font.Font(pygame_menu.font.FONT_OPEN_SANS_BOLD, 32)
+        if sys.platform == 'linux':
+            font_gross = pygame.font.Font(pygame_menu.font.FONT_OPEN_SANS_BOLD, 32)
+        elif sys.platform == 'win32':
+            font_gross = pygame.font.SysFont("Open Sans bold", 32)
         text_gross = font_gross.render(f"{__description_short__.upper()}", True, (255, 255, 255), Color("darkolivegreen"))
 
         box2 = pygame.Surface((text_riesig.get_width(), text_gross.get_height()))

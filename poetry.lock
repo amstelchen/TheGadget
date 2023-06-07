@@ -339,6 +339,36 @@ pygame-ce = ">=2.1.4"
 python-i18n = ">=0.3.9"
 
 [[package]]
+name = "pygame-menu-ce"
+version = "4.4.3"
+description = "A menu for pygame-ce. Simple, and easy to use"
+optional = false
+python-versions = ">=3.7, <4"
+files = [
+    {file = "pygame-menu-ce-4.4.3.tar.gz", hash = "sha256:a75e0f064b2de5e28f552848297e755a3537f4800174e5c46528402a18ad62b8"},
+    {file = "pygame_menu_ce-4.4.3-py3-none-any.whl", hash = "sha256:b22253b9ad9becc3c01a9efc8c044ea577603ca10687e5589d62b44c01bf067c"},
+]
+
+[package.dependencies]
+pygame-ce = ">=2.2.0"
+pyperclip = "*"
+typing-extensions = "*"
+
+[package.extras]
+docs = ["sphinx", "sphinx-autodoc-typehints (>=1.2.0)", "sphinx-rtd-theme"]
+test = ["nose2[coverage-plugin]"]
+
+[[package]]
+name = "pyperclip"
+version = "1.8.2"
+description = "A cross-platform clipboard module for Python. (Only handles plain text for now.)"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pyperclip-1.8.2.tar.gz", hash = "sha256:105254a8b04934f0bc84e9c24eb360a591aaf6535c9def5f29d92af107a9bf57"},
+]
+
+[[package]]
 name = "python-gettext"
 version = "5.0"
 description = "Python Gettext po to mo file compiler."
@@ -393,6 +423,17 @@ doc = ["sphinx", "sphinx_rtd_theme"]
 test = ["flake8", "isort", "pytest"]
 
 [[package]]
+name = "typing-extensions"
+version = "4.6.3"
+description = "Backported and Experimental Type Hints for Python 3.7+"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "typing_extensions-4.6.3-py3-none-any.whl", hash = "sha256:88a4153d8505aabbb4e13aacb7c486c2b4a33ca3b3f807914a9b4c844c471c26"},
+    {file = "typing_extensions-4.6.3.tar.gz", hash = "sha256:d91d5919357fe7f681a9f2b5b4cb2a5f1ef0a1e9f59c4d8ff0d3491e05c0ffd5"},
+]
+
+[[package]]
 name = "webencodings"
 version = "0.5.1"
 description = "Character encoding aliases for legacy web content"
@@ -421,4 +462,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "680c40457552cc94e11f543d927e633958b20c49cd3938937515234d80c6e7dc"
+content-hash = "e4ceea9f3178c6a1993a559d9e9dfa0b260134796238b76dffbc9793dd9f39d7"
