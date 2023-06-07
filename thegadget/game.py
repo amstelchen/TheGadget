@@ -4,9 +4,10 @@ from pathlib import Path
 import pygame
 from pygame.image import load
 from pygame.locals import Color
+import pygame_gui
 import datetime
+from datetime import date as dt
 import logging
-# import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap as Basemap
@@ -16,13 +17,20 @@ from matplotlib.colorbar import ColorbarBase
 import matplotlib.backends.backend_agg as agg
 import sqlite3
 import io
-#import pylab
 import cairosvg
-#from svg import Parser, Rasterizer
-#from intro import Intro
 
 from .__version__ import PROGNAME, FULLNAME, VERSION, AUTHOR, DESC, __appname__, __description_short__, __studioname__, __controls__
 from .utils import Data, SVG
+from .gui import GUIWindow, StatusWindow, EventWindow, PersonWindow
+from pygame_gui.elements import UIImage
+
+resources_path = os.path.join(os.path.dirname(__file__), 'resources')
+
+border_thin = 25
+border_half = 50
+border_wide = 100
+status_window_width = 400
+status_window_height = 150
 
 
 class Game():
@@ -42,42 +50,43 @@ class Game():
 
         self.loadDefaults()
 
-        data_file = os.path.join(os.path.dirname(__file__), 'resources', 'database', PROGNAME + ".db")
+        data_file = os.path.join(resources_path, 'database', PROGNAME + ".db")
         loader = Data(data_file)
         dates_data = loader.load_table_data("Dates")
         people_data = loader.load_table_data("People")
         places_data = loader.load_table_data("Places")
         logging.debug(f"Loaded {len(dates_data)} dates, {len(people_data)} people, {len(places_data)} places.")
-        #print(dates_data)
-
-        # Print the loaded data
-        #for row in dates_data:
-        #    print(row)
-
-#        self.window.bind("<F11>", self.quitNewYearsClock)
-#        self.window.bind("<Escape>", self.quitNewYearsClock)
 
         # Initialize Pygame, now handled in main()
-        #pygame.init()
+        # pygame.init()
 
         self.audiostate = True
+        self.fullScreenState = True
 
         # Set up the game window
-        # window_width = 800
-        # window_height = 600
-        #self.window = pygame.display.set_mode((self.config["window_width"], self.config["window_height"]))
-
-        #modes = pygame.display.list_modes()
-        #self.window = pygame.display.set_mode(modes[0], pygame.FULLSCREEN)
-        
-        self.fullScreenState = True
-        #pygame.display.toggle_fullscreen()
-
+        modes = pygame.display.list_modes()
+        self.screen = pygame.display.set_mode(modes[0])
+        pygame.display.toggle_fullscreen()
         pygame.display.set_caption(FULLNAME)
         self.screen = pygame.display.get_surface()
         self.window = self.screen
 
-        self.screen.fill(pygame.color.Color("white"))  # Fill the window with black color
+        logging.debug(f"Available modes: {[mode for mode in modes]}")
+        logging.debug(f"Selected mode: {pygame.display.get_window_size()}")
+
+        self.manager = pygame_gui.UIManager(self.screen.get_size(), os.path.join(resources_path, "themes/thegadget_theme.json"))
+        self.manager.preload_fonts([{'name': 'fira_code', 'point_size': 24, 'style': 'bold'},
+                                    {'name': 'fira_code', 'point_size': 24, 'style': 'bold_italic'},
+                                    {'name': 'fira_code', 'point_size': 18, 'style': 'bold'},
+                                    {'name': 'fira_code', 'point_size': 18, 'style': 'regular'},
+                                    {'name': 'fira_code', 'point_size': 18, 'style': 'bold_italic'},
+                                    {'name': 'fira_code', 'point_size': 14, 'style': 'bold'}
+                                    ])
+
+        # Game variables
+        running = True
+        logging.debug("Setting up clock...")
+        self.clock = pygame.time.Clock()
 
         ff = self.config['fontface']
         ff_mono = self.config['fontface_mono']
@@ -94,13 +103,11 @@ class Game():
         self.surface_pos = pygame.image.load(svg_file_pos)
 
         svg_string = SVG(places_data).create_markup()
-        #logging.debug(str(svg_string))
-
         svg_file_div = os.path.join(os.path.dirname(__file__), "svgtest.svg")
-        #self.surface_div = pygame.image.load(svg_file_div)
-        #self.surface_div = pygame.image.load(io.BytesIO(svg_string.encode()))
         logging.debug("Images loaded.")
 
+        #self.surface_div = pygame.image.load(svg_file_div)
+        #self.surface_div = pygame.image.load(io.BytesIO(svg_string.encode()))
         #svg_io = io.BytesIO(svg_string.encode())
         #png_io = io.BytesIO()
         #with open(svg_file_div, "rb") as f:
@@ -108,66 +115,53 @@ class Game():
         #    cairosvg.svg2png(file_obj=f, write_to=png_io)
         #    png_io.seek(0)
         #    self.surf = pygame.image.load(png_io, "png")
-
         #svg_io2 = io.BytesIO(svg_string.encode())
         #svg_io2 = bytes(svg_string.encode())
-        svg_io2 = svg_string.encode()
         #svg_io2.seek(0, io.SEEK_END)
-        png_io2 = io.BytesIO()
 
+        svg_io2 = svg_string.encode()
+        png_io2 = io.BytesIO()
         cairosvg.svg2png(bytestring=svg_io2, write_to=png_io2)
         png_io2.seek(0)
         self.surface_div = pygame.image.load(png_io2, "png")
 
-        bg_color = (0, 0, 0)   # fill red as background color
-        #screen.fill(bg_color)
-        #screen.blit(surf, (0, 0)) # x, y position on screen
-        #pygame.display.flip()
+        #self.screen.fill(Color('#707070'))
 
-        # Game variables
-        running = True
-        logging.debug("Setting up clock...")
-        clock = pygame.time.Clock()
+        self.intro_window = GUIWindow(manager=self.manager, title=FULLNAME, pos=(self.screen.get_width() - 500 - border_thin, border_thin), size=(500, 650), page="intro")
 
-        self.newsurf = pygame.Surface((500, 500))
-        self.newsurf.fill(Color("mediumaquamarine"))
-        self.blit_text(self.newsurf, FULLNAME, (25, 25), font_med, color=Color("black"))
-        self.blit_text(self.newsurf, DESC, (25, 75), font_sml, color=Color("black"))
-        self.screen.blit(self.newsurf, (100, 100))
+        self.controls_window = GUIWindow(manager=self.manager, title="Controls", pos=(self.screen.get_width() - 500 - border_thin, 700), size=(500, 350), page="controls")
 
-        self.newsurf = pygame.Surface((500, 300))
-        self.newsurf.fill(Color("mediumaquamarine"))
-        self.blit_text(self.newsurf, "Controls", (25, 25), font_med, color=Color("black"))
-        self.blit_text(self.newsurf, __controls__, (25, 75), font_sml_serif, color=Color("black"))
-        self.screen.blit(self.newsurf, (self.screen.get_width() - 600, self.screen.get_height() - 600))
+        bg_color = (0, 0, 0)
 
-        self.newsurf = pygame.Surface((500, 75))
-        self.newsurf.fill(Color("mediumaquamarine"))
-        self.blit_text(self.newsurf, "Press space to continue", (25, 25), font_sml, color=Color("black"))
-        self.screen.blit(self.newsurf, (self.screen.get_width() - 600, self.screen.get_height() - 200))
-
-        pygame.display.flip()
-        self.screen.fill((255,255,255))
+        # pygame.display.flip()
 
         # Fictional date
-        start_date = datetime.date(1941, 10, 9)
-        start_date = datetime.date(1942, 6, 24)
-        start_date = datetime.date(1942, 11, 30)
         start_date = datetime.date(1939, 8, 1)
+        #start_date = datetime.date(1939, 9, 30)
         atest_date = datetime.date(1945, 7, 16)
         final_date = datetime.date(1947, 8, 15)
-        current_date = datetime.date(2023, 5, 24)
-        current_date = start_date
+        #current_date = datetime.date(2023, 5, 24)
+        
+        self.current_date = start_date
         days_gone = 0
+
+        self.status_window = StatusWindow(
+            self.manager, "Current Date",
+            (self.window.get_width() // 2 - status_window_width // 2 + border_thin, self.window.get_height() - status_window_height),
+            (status_window_width, status_window_height),
+            text=str(self.current_date))
+        self.status_window.disable()
 
         # Game loop
         while running:
             #plt.show()
 
+            time_delta = self.clock.tick(60) / 1000.0
+
             self.text_hist = ""
 
-            self.text = font_sml.render(f"Current Date: {current_date}", True, (0, 0, 0), Color("mediumaquamarine"))
-            self.text_rect = self.text.get_rect(center=(self.window.get_width() // 2 + 100, self.window.get_height() - 50))
+            #self.text = font_sml.render(f"Current Date: {current_date}", True, (0, 0, 0), Color("mediumaquamarine"))
+            #self.text_rect = self.text.get_rect(center=(self.window.get_width() // 2 + border_thin, self.window.get_height() - 50))
             #text.fill(pygame.color.Color("mediumaquamarine"))
 
             self.updateDisplay()
@@ -218,53 +212,88 @@ class Game():
                         logging.debug("Space has been pressed")
                         days_gone += 1
 
-                    current_date = start_date + datetime.timedelta(days=days_gone)
-                    logging.debug(current_date)
+                    if event.key == pygame.K_F1:
+                        try:
+                            # if not self.guiopedia_window.alive():
+                            self.guiopedia_window.kill()
+                        except AttributeError:
+                            pass
+                        finally:
+                            self.guiopedia_window = GUIWindow(manager=self.manager, title=FULLNAME, pos=(self.screen.get_width() - 500 - border_thin, border_thin), size=(500, 800))
+
+                    self.current_date = start_date + datetime.timedelta(days=days_gone)
+                    logging.debug(self.current_date)
                     #print(current_date.strftime("%Y-%m-%d"))
                         #print(type(dates_data))
 
+                    self.status_window.hide()
+
+                    self.status_window = StatusWindow(
+                        self.manager, "Current Date",
+                        (self.window.get_width() // 2 - status_window_width // 2 + border_thin, self.window.get_height() - status_window_height),
+                        (status_window_width, status_window_height),
+                        text=str(self.current_date))
+                    self.status_window.disable()
+
+                    #self.manager.ui_group.remove(self.status_window)
+
                     for date_event in dates_data:
-                        if current_date.strftime("%Y-%m-%d") == date_event[1]:
+                        if self.current_date.strftime("%Y-%m-%d") == date_event[1]:
                             logging.debug("Date event found!")
                             self.text_hist = f"{date_event[1]}\n{date_event[2]}"
                             self.subtext = f"{date_event[3]}"
-                            self.newsurf = pygame.Surface((500, 500))
-                            self.newsurf.fill(Color("mediumaquamarine"))
-                            self.blit_text(self.newsurf, self.text_hist, (25, 25), font_med, color=Color("black"))
-                            self.blit_text(self.newsurf, self.subtext, (25, 150), font_sml, color=Color("black"))
-                            self.screen.blit(self.newsurf, (100, 100))
+
+                            # self.intro_window.hide()
+
+                            self.event_window = EventWindow(
+                                self.manager, f"New event - {date_event[2]}", (self.window.get_width() // 2 - 300, self.window.get_height() // 2 - 200), (600, 400),
+                            text=f"{date_event[1]}\n\n{date_event[3]}")
                         else:
-                            pygame.display.flip()
-                        # self.updateDisplay()
+                            pass
 
                     for people_event in people_data:
-                        if current_date.strftime("%Y-%m-%d") == people_event[5]:
+                        if self.current_date.strftime("%Y-%m-%d") == people_event[5]:
                             logging.debug("Person event found!")
                             self.text_hist = f"{people_event[5]}\n{people_event[1]} joined the Manhattan Project."
                             self.subtext = f"{people_event[4]}"
-                            self.newsurf = pygame.Surface((500, 800))
-                            self.newsurf.fill(Color("mediumaquamarine"))
-                            charRect = pygame.Rect((270,10),(10, 10))
                             charImage = load(os.path.join(os.path.dirname(__file__), 'resources', 'images', people_event[1] + '.png'))
                             ratio = charImage.get_height()/charImage.get_width()
                             charImage = pygame.transform.scale(charImage, (220, 220 * ratio))
                             charImage = charImage.convert()
-                            self.newsurf.blit(charImage, charRect)
-                            self.blit_text(self.newsurf, self.text_hist, (25, 25), font_sml, color=Color("black"))
-                            self.blit_text(self.newsurf, self.subtext, (25, 280), font_sml, color=Color("black"))
-                            self.screen.blit(self.newsurf, (self.screen.get_width() - 600, 100))
+
+                            # self.intro_window.hide()
+
+                            born = dt.fromisoformat(people_event[2])
+                            born = dt.strftime(born, '%A, %d %B %Y')
+
+                            self.person_window = PersonWindow(
+                                self.manager, f"New person - {people_event[1]}", (self.window.get_width() // 2 - 300, self.window.get_height() // 2 - 200), (600, 400),
+                                text=f"{people_event[1]} joined the Manhattan Project.\n\n{people_event[4]}<br><br>Born: {born},\n{people_event[3]}",
+                                image=charImage)
+
+                            self.image = UIImage(
+                                relative_rect=pygame.Rect(
+                                    (10, 10),
+                                    (200, 288)),
+                                image_surface=charImage,
+                                manager=self.manager,
+                                container=self.person_window,
+                                parent_element=self.person_window)
                         else:
-                            pygame.display.flip()
+                            pass
+
+                self.manager.process_events(event)
 
             # Update game logic
+            self.manager.update(time_delta)
 
             # Render the game
+            self.manager.draw_ui(self.window)
+            pygame.display.update()
 
             #surface = pygame.image.load('Manhattan_Project_US_Canada_Map_2.svg')
             #surface = pygame.transform.smoothscale(surface, (screen.get_width(), screen.get_height()))
             #screen.blit(surface, (0, 0))
-
-
             # Render SVG to Pygame surface using Pycairo
             #surface = cairosvg.surface.PNGSurface.from_file(svg_file)
             #with open(svg_file, "rb") as f:
@@ -272,15 +301,8 @@ class Game():
             #    stream = io.BytesIO(surface.to_png())
             #    image = pygame.image.load(stream)
 
-            #pygame.display.flip()
-
-            #screen.blit(surf, (0, 0)) # x, y position on screen
-
-            #pygame.display.flip()  # Update the window
-            #self.updateDisplay()
-
             # Control the frame rate
-            clock.tick(10)  # Cap the frame rate at 60 FPS
+            self.clock.tick(10)  # Cap the frame rate at 60 FPS
 
         # Quit the game
         logging.debug("Quitting.")
@@ -291,7 +313,7 @@ class Game():
         #self.screen.fill(pygame.color.Color("mediumaquamarine"))
 
         # Display the fictional date
-        self.window.blit(self.text, self.text_rect)
+        #self.window.blit(self.text, self.text_rect)
 
         self.screen.blit(self.surface_map, (0, 0))
         self.screen.blit(self.surface_pos, (0, 0))
@@ -330,12 +352,11 @@ class Game():
         try:
             with open(userPath, "r") as configFile:
                 # self.config= configFile.readlines()
-                # print(self.config)
                 self.config = {}
                 for configLine in configFile.readlines():
                     name, value = configLine.strip().split(" = ")
                     self.config[name] = value
-                #print(self.config)
+                logging.debug(f"Settings loaded: {self.config}")
         except FileNotFoundError as e:
             logging.warning(e)
             logging.warning("Using sane defaults.")

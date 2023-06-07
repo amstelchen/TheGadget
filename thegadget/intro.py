@@ -1,4 +1,5 @@
 import os
+import logging
 
 import pygame
 import pygame_menu
@@ -11,6 +12,9 @@ musicloop = os.path.join(os.path.dirname(__file__), 'resources', 'music', 'The-G
 
 class Intro():
     def __init__(self):
+
+        logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
+
         self.run()
 
     def close_game(self):
@@ -38,10 +42,12 @@ class Intro():
 
         modes = pygame.display.list_modes()
         screen = pygame.display.set_mode(modes[0])
-        #screen = pygame.display.set_mode((ScreenX, ScreenY))
         pygame.display.toggle_fullscreen()
-        #print(modes)
-        #print(pygame.display.get_window_size())
+
+        #screen = pygame.display.set_mode((ScreenX, ScreenY))
+
+        logging.debug(f"Available modes: {[mode for mode in modes]}")
+        logging.debug(f"Selected mode: {pygame.display.get_window_size()}")
 
         screen.fill(Color("black"))
         imgStudio = largefont.render(__studioname__, True, Color("white"))
