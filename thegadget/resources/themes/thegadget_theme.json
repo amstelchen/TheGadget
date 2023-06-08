@@ -30,12 +30,13 @@
             "title_bar_height": "28"
         }
     },
+
     "#guiopedia_window.#home_button":
     {
         "images":
         {
             "normal_image": {
-                "path": "data/images/home_icon.png"
+                "path": "thegadget/resources/images/home_icon.png"
             }
         },
         "misc":
@@ -108,7 +109,7 @@
         {
             "size": "10"
         }
-   },
+    },
 
     "#research_window.label":
     {
@@ -116,7 +117,7 @@
         {
             "size": "11"
         }
-   },
+    },
 
    "#research_window.button":
    {
@@ -124,5 +125,19 @@
        {
            "size": "9.5"
        }
-  }
+    },
+
+    "#research_window.#home_button":
+    {
+        "images":
+        {
+            "normal_image": {
+                "path": "thegadget/resources/images/home_icon.png"
+            }
+        },
+        "misc":
+        {
+            "shape": "ellipse"
+        }
+    }
 }
