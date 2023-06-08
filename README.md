@@ -76,6 +76,47 @@ Here is a list of tasks that could be incorporated into a game involving the Man
 
 These tasks can provide players with a variety of objectives and challenges while immersing them in the historical context of the Manhattan Project.
 
+#### Research tree
+
+Here's a basic research tree for the development of the Trinity bomb, the first atomic bomb detonated as part of the Manhattan Project:
+
+    Nuclear Physics Research
+        Subatomic Particle Study
+        Nuclear Fission Experiments
+        Uranium and Plutonium Properties
+
+    Uranium Enrichment
+        Uranium Ore Extraction
+        Isotope Separation Methods (e.g., Gaseous Diffusion, Electromagnetic Separation)
+        Uranium Enrichment Techniques (e.g., Gas Centrifuge, Thermal Diffusion)
+
+    Plutonium Production
+        Neutron Source Design
+        Neutron Irradiation of Uranium-238
+        Plutonium Separation Techniques (e.g., Chemical Reprocessing, Purex Process)
+
+    Reactor Design
+        Graphite Moderated Reactor
+        Heavy Water Moderated Reactor
+        Cooling Systems and Control Mechanisms
+
+    Bomb Design
+        Implosion Design (e.g., Explosive Lenses, Spherical Symmetry)
+        Detonation Mechanisms (e.g., Neutron Initiators, Explosive Triggers)
+        Tamper Design for Enhanced Efficiency
+
+    Testing Preparations
+        Selection of Test Site (e.g., Alamogordo, New Mexico)
+        Construction of Test Facility and Safety Measures
+        Assembly and Integration of the Bomb Components
+
+    Trinity Test
+        Final Assembly of the Bomb
+        Countdown and Preparations
+        Detonation and Data Collection
+
+Each branch of the research tree represents a different area of scientific and engineering focus required for the development of the Trinity bomb. It is important to note that this is a simplified representation, and the actual research and development process involved extensive experimentation, testing, and collaboration among various scientists, engineers, and facilities.
+
 #### SQLite table layout
 
 To design an SQLite table layout for a strategy game incorporating the places, people, technology, and dates related to the Manhattan Project, you can create separate tables for each entity and establish relationships between them using primary and foreign keys. Here's a suggested table layout:

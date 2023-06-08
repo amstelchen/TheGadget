@@ -1,4 +1,12 @@
 {
+    "defaults":
+    {
+        "font":
+        {
+            "size": "10"
+        }
+    },
+
     "#guiopedia_window":
     {
         "colours":
@@ -92,6 +100,29 @@
          {
              "size": "40"
          }
-    }
+    },
 
+    "#tech_button":
+    {
+        "font":
+        {
+            "size": "10"
+        }
+   },
+
+    "#research_window.label":
+    {
+        "font":
+        {
+            "size": "11"
+        }
+   },
+
+   "#research_window.button":
+   {
+       "font":
+       {
+           "size": "9.5"
+       }
+  }
 }

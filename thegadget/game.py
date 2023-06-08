@@ -22,6 +22,7 @@ import io
 from .__version__ import PROGNAME, FULLNAME, VERSION, AUTHOR, DESC, __appname__, __description_short__, __studioname__, __controls__
 from .utils import Data, SVG
 from .gui import GUIWindow, StatusWindow, EventWindow, PersonWindow
+from .tech import TechWindow
 from pygame_gui.elements import UIImage, UILabel
 
 # workaround to include Cairo on Windows
@@ -60,6 +61,7 @@ class Game():
         dates_data = loader.load_table_data("Dates")
         people_data = loader.load_table_data("People")
         places_data = loader.load_table_data("Places")
+        tech_data = loader.load_table_data("Projects")
         logging.debug(f"Loaded {len(dates_data)} dates, {len(people_data)} people, {len(places_data)} places.")
 
         # Initialize Pygame, now handled in main()
@@ -87,6 +89,8 @@ class Game():
                                     {'name': 'fira_code', 'point_size': 18, 'style': 'bold_italic'},
                                     {'name': 'fira_code', 'point_size': 14, 'style': 'bold'}
                                     ])
+
+        self.research_progress = { 1: 100, 2: 80, 3: 40, 4: 25, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 }
 
         # Game variables
         running = True
@@ -203,6 +207,12 @@ class Game():
 
                 # checking if keydown event happened or not
                 if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_c:
+                        logging.debug("Key C has been pressed")
+                        self.research_progress[5] += 20
+                        #self.manager.process_events(event)
+                        #self.manager.draw_ui(self.window)
+                        #pygame.display.update()
                     
                     # checking if key "F" was pressed
                     if event.key == pygame.K_f:
@@ -214,9 +224,20 @@ class Game():
                         self.updateDisplay()
                     
                     # checking if key "A" was pressed
-                    if event.key == pygame.K_a:
-                        logging.debug("Key A has been pressed")
-                    
+                    if event.key == pygame.K_t:
+                        logging.debug("Key T has been pressed")
+                        try:
+                            # if not self.guiopedia_window.alive():
+                            self.guiopedia_window.kill()
+                        except AttributeError:
+                            pass
+                        finally:
+                            self.research_window = TechWindow(
+                                manager=self.manager, title="Research", 
+                                pos=(border_wide, border_wide), 
+                                size=(self.screen.get_width() - border_wide * 2, 800), 
+                                techtree=tech_data, progress=self.research_progress)
+
                     # checking if key "W" was pressed
                     if event.key == pygame.K_w:
                         logging.debug("Key W has been pressed")
