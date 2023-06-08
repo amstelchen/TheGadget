@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "thegadget"
-version = "0.4.0"
+version = "0.5.0"
 description = "A strategic simulation, written in Python."
 authors = ["Michael John <michael.john@gmx.at>"]
 license = "MIT"
@@ -28,6 +28,10 @@ pygame-gui = "^0.6.9"
 cairosvg = "^2.7.0"
 # removed due to incompatibilities: pygame-menu = "^4.4.3"
 pygame-menu-ce = "^4.4.3"
+# TODO: need these for windows:
+# matplotlib
+# basemap
+# msvc-runtime
 
 [tool.poetry.dev-dependencies]
 
