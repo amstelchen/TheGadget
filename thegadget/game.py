@@ -21,6 +21,7 @@ import io
 
 from .__version__ import PROGNAME, FULLNAME, VERSION, AUTHOR, DESC, __appname__, __description_short__, __studioname__, __controls__
 from .utils import Data, SVG
+from .stats import PlayerStats
 from .gui import GUIWindow, StatusWindow, EventWindow, PersonWindow
 from .tech import TechWindow
 from pygame_gui.elements import UIImage, UILabel
@@ -55,6 +56,8 @@ class Game():
         logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 
         self.loadDefaults()
+
+        self.stats = PlayerStats()
 
         data_file = os.path.join(resources_path, 'database', PROGNAME + ".db")
         loader = Data(data_file)
@@ -242,12 +245,21 @@ class Game():
                     if event.key == pygame.K_w:
                         logging.debug("Key W has been pressed")
                         days_gone += 7
+                        self.research_progress[6] += 10
                     
                     # checking if key "Q" was pressed
                     if event.key == pygame.K_q:
                         logging.debug("Key Q has been pressed")
                         running = False
-                    
+
+                    # checking if key "S" was pressed
+                    if event.key == pygame.K_s:
+                        logging.debug("Key S has been pressed")
+                        if sys.platform == 'linux':
+                            save_file = os.path.join(str(Path('~').expanduser()), ".config", PROGNAME, "game_stats.json")
+                        self.stats.save(save_file)
+                        logging.debug("Game saved.")
+
                     # checking if key "M" was pressed
                     if event.key == pygame.K_m:
                         logging.debug("Key M has been pressed")
