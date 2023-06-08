@@ -1,6 +1,7 @@
 import sys
 import os
 from pathlib import Path
+from collections import deque
 import pygame
 from pygame.image import load
 from pygame.locals import Color
@@ -21,10 +22,11 @@ import io
 from .__version__ import PROGNAME, FULLNAME, VERSION, AUTHOR, DESC, __appname__, __description_short__, __studioname__, __controls__
 from .utils import Data, SVG
 from .gui import GUIWindow, StatusWindow, EventWindow, PersonWindow
-from pygame_gui.elements import UIImage
-os.environ['PATH'] += ";" + os.path.join(os.path.dirname(__file__), "resources", "dlls")
+from pygame_gui.elements import UIImage, UILabel
 
-import cairosvg
+# workaround to include Cairo on Windows
+os.environ['PATH'] += ";" + os.path.join(os.path.dirname(__file__), "resources", "dlls")
+import cairosvg  # noqa: E402
 
 resources_path = os.path.join(os.path.dirname(__file__), 'resources')
 
@@ -45,7 +47,8 @@ class Game():
             "fontface": "Noto sans",
             "fontface_mono": "Noto sans Mono",
             "fontsize": "50",
-            "fullscreen": 1
+            "fullscreen": 1,
+            "show_fps": 0
         }
 
         logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
@@ -88,7 +91,10 @@ class Game():
         # Game variables
         running = True
         logging.debug("Setting up clock...")
+        self.fps_counter = None
+        self.frame_timer = None
         self.clock = pygame.time.Clock()
+        self.time_delta_stack = deque([], 2000)
 
         ff = self.config['fontface']
         ff_mono = self.config['fontface_mono']
@@ -129,6 +135,12 @@ class Game():
 
         #self.screen.fill(Color('#707070'))
 
+        self.fps_counter = UILabel(manager=self.manager, relative_rect=pygame.Rect(self.screen.get_width() - 250, 20, 230, 44),
+                                  text="", object_id='#fps_counter')  # was text="FPS: 0"
+
+        self.frame_timer = UILabel(manager=self.manager, relative_rect=pygame.Rect(self.screen.get_width() - 250, 64, 230, 24),
+                                   text="", object_id='#frame_timer')  # was text="Frame time: 0"
+
         self.intro_window = GUIWindow(manager=self.manager, title=FULLNAME, pos=(self.screen.get_width() - 500 - border_thin, border_thin), size=(500, 650), page="intro")
 
         self.controls_window = GUIWindow(manager=self.manager, title="Controls", pos=(self.screen.get_width() - 500 - border_thin, 700), size=(500, 350), page="controls")
@@ -159,6 +171,22 @@ class Game():
             #plt.show()
 
             time_delta = self.clock.tick(60) / 1000.0
+            self.time_delta_stack.append(time_delta)
+            if len(self.time_delta_stack) > 2000:
+                self.time_delta_stack.popleft()
+
+            # self.fps_counter.set_text(str(len(self.time_delta_stack)))
+
+            # check for input
+            # self.process_events()
+
+            # respond to input
+            self.manager.update(time_delta)
+
+            if len(self.time_delta_stack) == 2000 and self.config["show_fps"] == '1':
+                self.fps_counter.set_text(
+                    f'FPS: {min(999.0, 1.0/max(sum(self.time_delta_stack)/2000.0, 0.0000001)):.2f}')
+                self.frame_timer.set_text(f'Frame_time: {sum(self.time_delta_stack)/2000.0:.4f}')
 
             self.text_hist = ""
 
@@ -287,7 +315,7 @@ class Game():
                 self.manager.process_events(event)
 
             # Update game logic
-            self.manager.update(time_delta)
+            # self.manager.update(time_delta)
 
             # Render the game
             self.manager.draw_ui(self.window)
@@ -304,7 +332,7 @@ class Game():
             #    image = pygame.image.load(stream)
 
             # Control the frame rate
-            self.clock.tick(10)  # Cap the frame rate at 60 FPS
+            #self.clock.tick(10)  # Cap the frame rate at 60 FPS
 
         # Quit the game
         logging.debug("Quitting.")
