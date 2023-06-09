@@ -11,6 +11,7 @@ include = [
     "thegadget/resources/images/*",
     "thegadget/resources/maps/*",
     "thegadget/resources/music/*",
+    "thegadget/resources/dlls/*",
 ]
 exclude = [
     "thegadget/resources/unused/*",
