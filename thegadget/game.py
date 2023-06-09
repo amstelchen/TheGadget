@@ -22,7 +22,7 @@ import io
 from .__version__ import PROGNAME, FULLNAME, VERSION, AUTHOR, DESC, __appname__, __description_short__, __studioname__, __controls__
 from .utils import Data, SVG
 from .stats import PlayerStats
-from .gui import GUIWindow, StatusWindow, EventWindow, PersonWindow
+from .gui import GUIWindow, ControlsWindow, StatusWindow, EventWindow, PersonWindow
 from .tech import TechWindow
 from pygame_gui.elements import UIImage, UILabel
 
@@ -150,7 +150,7 @@ class Game():
 
         self.intro_window = GUIWindow(manager=self.manager, title=FULLNAME, pos=(self.screen.get_width() - 500 - border_thin, border_thin), size=(500, 650), page="intro")
 
-        self.controls_window = GUIWindow(manager=self.manager, title="Controls", pos=(self.screen.get_width() - 500 - border_thin, 700), size=(500, 350), page="controls")
+        self.controls_window = ControlsWindow(manager=self.manager, title="Controls", pos=(self.screen.get_width() - 500 - border_thin, 700), size=(500, 350), page="controls")
 
         bg_color = (0, 0, 0)
 
@@ -227,8 +227,8 @@ class Game():
                         self.updateDisplay()
                     
                     # checking if key "A" was pressed
-                    if event.key == pygame.K_t:
-                        logging.debug("Key T has been pressed")
+                    if event.key == pygame.K_r:
+                        logging.debug("Key R has been pressed")
                         try:
                             # if not self.guiopedia_window.alive():
                             self.guiopedia_window.kill()

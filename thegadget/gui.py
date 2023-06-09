@@ -124,6 +124,50 @@ class PersonWindow(UIWindow):
         return handled
 
 
+class ControlsWindow(UIWindow):
+    def __init__(self, manager, title, pos: tuple, size: tuple, page = None):
+        super().__init__(
+            Rect(
+                pos, size),  # (200, 50), (420, 520)),
+            manager,
+            window_display_title=title,
+            object_id="#controls_window")
+
+        self.remaining_window_size = (
+            self.get_container().get_size()[0],
+                (self.get_container().get_size()[1]))
+
+        self.page_y_start_pos = 0
+
+        file_path = os.path.join(resources_path, 'guiopedia', 'controls.html')
+        with open(file_path, 'r') as page_file:
+            file_id = splitext(basename(file_path))[0]
+            file_data = ""
+            for line in page_file:
+                line = line.rstrip(linesep).lstrip()
+                # kind of hacky way to add back spaces at the end of new lines that
+                # are removed by the pyCharm HTML
+                # editor. perhaps our HTML parser needs to handle this case
+                # (turning new lines into spaces
+                # but removing spaces at the start of rendered lines?)
+                if len(line) > 0:
+                    if line[-1] != '>':
+                        line += ' '
+                    file_data += line
+            #self.pages[file_id] = file_data
+
+        #index_page = "controls"
+
+        self.page_display = UITextBox(
+            file_data,
+            Rect(
+                (0, self.page_y_start_pos),
+                self.remaining_window_size),
+            manager=manager,
+            container=self,
+            parent_element=self)
+
+
 class GUIWindow(UIWindow):
     def __init__(self, manager, title, pos: tuple, size: tuple, page = None):
         super().__init__(
