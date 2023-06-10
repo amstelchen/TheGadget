@@ -1,4 +1,4 @@
-### Title: "Project Genesis"
+### Title: "Project Genesis" (working title: "The Gadget")
 
 #### Game Concept:
 "Project Genesis" is a narrative-driven strategy game that puts players in the role of a key scientist involved in the Manhattan Project. The game aims to provide an immersive experience by combining historical accuracy with engaging gameplay mechanics.
@@ -152,3 +152,16 @@ The "Technology" table holds information about the various technologies or scien
 The "Projects" table represents individual projects within the Manhattan Project, with start and end dates linked to the "Dates" table. The "Project_People," "Project_Technology," and "Project_Places" tables establish many-to-many relationships between projects, people, technologies, and places.
 
 This table layout allows for the organization and retrieval of data related to the various entities and their relationships in the game, facilitating gameplay mechanics, historical accuracy, and data management.
+
+#### Reporting bugs
+
+If you encounter any bugs or incompatibilities, __please report them [here](https://github.com/amstelchen/TheGadget/issues/new)__.
+
+#### Troubleshooting
+
+TODO
+
+#### Licences
+
+*The Gadget* is licensed under the [MIT](LICENSE) license.
+
