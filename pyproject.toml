@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "thegadget"
-version = "0.5.0"
+version = "0.6.0"
 description = "A strategic simulation, written in Python."
 authors = ["Michael John <michael.john@gmx.at>"]
 license = "MIT"
@@ -9,6 +9,7 @@ include = [
     "thegadget/locales/**/LC_MESSAGES/*.mo",
     "thegadget/resources/database/*",
     "thegadget/resources/images/*",
+    "thegadget/resources/images/events/*",
     "thegadget/resources/maps/*",
     "thegadget/resources/music/*",
     "thegadget/resources/dlls/*",
@@ -33,6 +34,8 @@ pygame-menu-ce = "^4.4.3"
 # matplotlib
 # basemap
 # msvc-runtime
+pygame-animatedgif = "^0.1.0"
+moviepy = "^1.0.3"
 
 [tool.poetry.dev-dependencies]
 
