@@ -48,7 +48,7 @@ class StatusWindow(UIWindow):
 
 
 class EventWindow(UIWindow):
-    def __init__(self, manager, title, pos: tuple, size: tuple, text: str):
+    def __init__(self, manager, title, pos: tuple, size: tuple, text: str, image: pygame.surface.Surface = None):
         super().__init__(
             Rect(
                 pos, size),  # (200, 50), (420, 520)),
@@ -57,7 +57,7 @@ class EventWindow(UIWindow):
             object_id="#status_window")
 
         self.remaining_window_size = (
-            self.get_container().get_size()[0],
+            self.get_container().get_size()[0] - 440,
                 (self.get_container().get_size()[1]))
 
         self.page_y_start_pos = 0
@@ -65,11 +65,20 @@ class EventWindow(UIWindow):
         self.page_display = UITextBox(
             text,
             relative_rect=Rect(
-                (0, self.page_y_start_pos),
+                (440, self.page_y_start_pos),
                 self.remaining_window_size),
             manager=manager,
             container=self,
             parent_element=self)
+
+        """self.image = UIImage(
+            relative_rect=Rect(
+                (0, self.page_y_start_pos),
+                self.remaining_window_size),
+            image_surface=image,
+            manager=manager,
+            container=self,
+            parent_element=self)"""
 
     def process_event(self, event):
         handled = super().process_event(event)
@@ -82,7 +91,7 @@ class EventWindow(UIWindow):
 
 
 class PersonWindow(UIWindow):
-    def __init__(self, manager, title, pos: tuple, size: tuple, text: str, image: pygame.surface.Surface):
+    def __init__(self, manager, title, pos: tuple, size: tuple, text: str, image: pygame.surface.Surface = None):
         super().__init__(
             Rect(
                 pos, size),  # (200, 50), (420, 520)),

@@ -26,11 +26,17 @@ from .gui import GUIWindow, ControlsWindow, StatusWindow, EventWindow, PersonWin
 from .tech import TechWindow
 from pygame_gui.elements import UIImage, UILabel
 
+from pygame_animatedgif import AnimatedGifSprite
+import moviepy.editor
+
 # workaround to include Cairo on Windows
 os.environ['PATH'] += ";" + os.path.join(os.path.dirname(__file__), "resources", "dlls")
 import cairosvg  # noqa: E402
 
 resources_path = os.path.join(os.path.dirname(__file__), 'resources')
+
+# video = moviepy.editor.VideoFileClip("/raid/Projekte/TheGadget/thegadget/resources/images/events/trinity_test.mpg")
+video = moviepy.editor.VideoFileClip(os.path.join(resources_path, 'images/events/trinity_test.mpg'))
 
 border_thin = 25
 border_half = 50
@@ -53,7 +59,8 @@ class Game():
             "show_fps": 0
         }
 
-        logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
+        # logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
+        logging.basicConfig(format='%(levelname)s:%(asctime)s:%(filename)s:%(lineno)d:%(message)s', level=logging.DEBUG)
 
         self.loadDefaults()
 
@@ -66,6 +73,10 @@ class Game():
         places_data = loader.load_table_data("Places")
         tech_data = loader.load_table_data("Projects")
         logging.debug(f"Loaded {len(dates_data)} dates, {len(people_data)} people, {len(places_data)} places.")
+
+        image_count1 = self.load_images(dates_data, 4, None, 420, 'events')
+        image_count2 = self.load_images(people_data, 1, '.png', 200, None)
+        logging.debug(f"Loaded images: {image_count1} dates, {image_count2} people.") # , {len(places_data)} places.")
 
         # Initialize Pygame, now handled in main()
         # pygame.init()
@@ -152,13 +163,18 @@ class Game():
 
         self.controls_window = ControlsWindow(manager=self.manager, title="Controls", pos=(self.screen.get_width() - 500 - border_thin, 700), size=(500, 350), page="controls")
 
+        self.ani_gif = AnimatedGifSprite((self.window.get_width() // 2 - 400, self.window.get_height() // 2 - 200), os.path.join(os.path.dirname(__file__), 'resources', 'images', 'events', 'TrinityDetonation1945GIF.gif'))
+        self.sprite_group = pygame.sprite.Group()
+        self.sprite_group.add(self.ani_gif)
+
         bg_color = (0, 0, 0)
 
         # pygame.display.flip()
 
         # Fictional date
-        start_date = datetime.date(1939, 8, 1)
-        #start_date = datetime.date(1939, 9, 30)
+        start_date = datetime.date(1939, 8, 1)    # Szilard letter
+        #start_date = datetime.date(1939, 9, 30)  # Leo Szilard
+        #start_date = datetime.date(1945, 7, 14)  # Trinity test
         atest_date = datetime.date(1945, 7, 16)
         final_date = datetime.date(1947, 8, 15)
         #current_date = datetime.date(2023, 5, 24)
@@ -247,6 +263,12 @@ class Game():
                         days_gone += 7
                         self.research_progress[6] += 10
                     
+                    # checking if key "E" was pressed
+                    if event.key == pygame.K_e:
+                        logging.debug("Key e has been pressed")
+                        days_gone += 31
+                        self.research_progress[6] += 20
+
                     # checking if key "Q" was pressed
                     if event.key == pygame.K_q:
                         logging.debug("Key Q has been pressed")
@@ -285,9 +307,17 @@ class Game():
                             self.guiopedia_window = GUIWindow(manager=self.manager, title=FULLNAME, pos=(self.screen.get_width() - 500 - border_thin, border_thin), size=(500, 800))
 
                     self.current_date = start_date + datetime.timedelta(days=days_gone)
-                    logging.debug(self.current_date)
+                    logging.debug(f"{self.current_date = }")
                     #print(current_date.strftime("%Y-%m-%d"))
                         #print(type(dates_data))
+
+                    for date_event in dates_data:
+                        # logging.debug(date_event)
+                        if datetime.datetime.combine(self.current_date, datetime.time(0, 0)) < datetime.datetime.strptime(date_event[1], "%Y-%m-%d"):
+                            logging.debug(f"next date_event {date_event[1]}")
+                            date_diff = (datetime.datetime.combine(self.current_date, datetime.time(0, 0)) - datetime.datetime.strptime(date_event[1], "%Y-%m-%d")).days * -1
+                            logging.debug(f"{date_diff = }")
+                            break
 
                     self.status_window.hide()
 
@@ -305,24 +335,49 @@ class Game():
                             logging.debug("Date event found!")
                             self.text_hist = f"{date_event[1]}\n{date_event[2]}"
                             self.subtext = f"{date_event[3]}"
+                            #eventImage = load(os.path.join(os.path.dirname(__file__), 'resources', 'images', 'events', date_event[4]))
+                            #ratio = eventImage.get_height()/eventImage.get_width()
+                            #eventImage = pygame.transform.scale(eventImage, (420, 420 * ratio))
+                            #eventImage = eventImage.convert()
 
                             # self.intro_window.hide()
 
                             self.event_window = EventWindow(
-                                self.manager, f"New event - {date_event[2]}", (self.window.get_width() // 2 - 300, self.window.get_height() // 2 - 200), (600, 400),
+                                self.manager, f"New event - {date_event[2]}", (self.window.get_width() // 2 - 400, self.window.get_height() // 2 - 200), (800, 400),
                             text=f"{date_event[1]}\n\n{date_event[3]}")
-                        else:
-                            pass
+                            # image=eventImage)
+
+                            if date_event[0] == 7:
+                                self.manager.draw_ui(self.window)
+                                pygame.display.update()
+                                #for i in range(int(317)):
+                                    #self.sprite_group.update(self.screen)
+                                    #self.sprite_group.draw(self.screen)
+                                    #self.manager.process_events(event)
+                                    #self.clock.tick_busy_loop(33)
+                                    #pygame.display.update()
+                                #self.ani_gif.pause()
+                                #self.ani_gif = None
+
+                            eventImage = date_event[5]
+                            self.image = UIImage(
+                                relative_rect=pygame.Rect(
+                                    (10, 10),
+                                    (420, 420 // 1.3)),
+                                image_surface=eventImage,
+                                manager=self.manager,
+                                container=self.event_window,
+                                parent_element=self.event_window)
 
                     for people_event in people_data:
                         if self.current_date.strftime("%Y-%m-%d") == people_event[5]:
                             logging.debug("Person event found!")
                             self.text_hist = f"{people_event[5]}\n{people_event[1]} joined the Manhattan Project."
                             self.subtext = f"{people_event[4]}"
-                            charImage = load(os.path.join(os.path.dirname(__file__), 'resources', 'images', people_event[1] + '.png'))
-                            ratio = charImage.get_height()/charImage.get_width()
-                            charImage = pygame.transform.scale(charImage, (220, 220 * ratio))
-                            charImage = charImage.convert()
+                            #charImage = load(os.path.join(os.path.dirname(__file__), 'resources', 'images', people_event[1] + '.png'))
+                            #ratio = charImage.get_height()/charImage.get_width()
+                            #charImage = pygame.transform.scale(charImage, (200, 200 * ratio))
+                            #charImage = charImage.convert()
 
                             # self.intro_window.hide()
 
@@ -331,19 +386,18 @@ class Game():
 
                             self.person_window = PersonWindow(
                                 self.manager, f"New person - {people_event[1]}", (self.window.get_width() // 2 - 300, self.window.get_height() // 2 - 200), (600, 400),
-                                text=f"{people_event[1]} joined the Manhattan Project.\n\n{people_event[4]}<br><br>Born: {born},\n{people_event[3]}",
-                                image=charImage)
+                                text=f"{people_event[1]} joined the Manhattan Project.\n\n{people_event[4]}<br><br>Born: {born},\n{people_event[3]}")
+                                # image=charImage)
 
+                            charImage = people_event[6]
                             self.image = UIImage(
                                 relative_rect=pygame.Rect(
                                     (10, 10),
-                                    (200, 288)),
+                                    (200, 200 * 1.3)),
                                 image_surface=charImage,
                                 manager=self.manager,
                                 container=self.person_window,
                                 parent_element=self.person_window)
-                        else:
-                            pass
 
                 self.manager.process_events(event)
 
@@ -370,6 +424,30 @@ class Game():
         # Quit the game
         logging.debug("Quitting.")
         pygame.quit()
+
+    def load_images(self, dataset, load_column, use_ext: str = '', image_width = None, subfolder = ''):
+        if use_ext is None:
+            use_ext = ''
+        if subfolder is None:
+            subfolder = ''
+        image_path = os.path.join(os.path.dirname(__file__), 'resources', 'images', str(subfolder))
+
+        image_count = 0
+        for _, row in enumerate(dataset):
+            if row[load_column] is None:
+                dataset[_] += (None,)
+                continue
+            if os.path.isfile(os.path.join(image_path, row[load_column]) + str(use_ext)):
+                image = load(os.path.join(image_path, row[load_column]) + str(use_ext))
+                ratio = image.get_height() / image.get_width()
+                image = pygame.transform.scale(image, (image_width, image_width * ratio))
+                image = image.convert()
+                dataset[_] += (image,)
+                image_count += 1
+
+        return image_count
+            #else:
+             #   dataset[_] += (None,)
 
     def updateDisplay(self):
         self.screen.fill((255,255,255))
