@@ -44,6 +44,9 @@ border_wide = 100
 status_window_width = 400
 status_window_height = 150
 
+# logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)s:%(asctime)s:%(filename)s:%(lineno)d:%(message)s', level=logging.DEBUG)
+
 
 class Game():
     def __init__(self):
@@ -59,16 +62,13 @@ class Game():
             "show_fps": 0
         }
 
-        # logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
-        logging.basicConfig(format='%(levelname)s:%(asctime)s:%(filename)s:%(lineno)d:%(message)s', level=logging.DEBUG)
-
         self.loadDefaults()
 
         self.stats = PlayerStats()
 
         data_file = os.path.join(resources_path, 'database', PROGNAME + ".db")
         loader = Data(data_file)
-        dates_data = loader.load_table_data("Dates")
+        dates_data = loader.load_table_data("Dates", "ORDER BY event_date")
         people_data = loader.load_table_data("People")
         places_data = loader.load_table_data("Places")
         tech_data = loader.load_table_data("Projects")
@@ -319,6 +319,14 @@ class Game():
                             logging.debug(f"{date_diff = }")
                             break
 
+                    for people_event in people_data:
+                        # logging.debug(people_event)
+                        if datetime.datetime.combine(self.current_date, datetime.time(0, 0)) < datetime.datetime.strptime(people_event[5], "%Y-%m-%d"):
+                            logging.debug(f"next people_event {people_event[5]}")
+                            date_diff = (datetime.datetime.combine(self.current_date, datetime.time(0, 0)) - datetime.datetime.strptime(people_event[5], "%Y-%m-%d")).days * -1
+                            logging.debug(f"{date_diff = }")
+                            break
+
                     self.status_window.hide()
 
                     self.status_window = StatusWindow(
@@ -444,6 +452,8 @@ class Game():
                 image = image.convert()
                 dataset[_] += (image,)
                 image_count += 1
+            else:
+                logging.debug(f"No image data for {row[load_column]}.")
 
         return image_count
             #else:

@@ -37,6 +37,16 @@ class StatusWindow(UIWindow):
             container=self,
             parent_element=self)
 
+        self.page_display = UILabel(
+            text=text,
+            relative_rect=Rect(
+                (0, self.page_y_start_pos),
+                self.remaining_window_size),
+            manager=manager,
+            container=self,
+            parent_element=self,
+            object_id="#status_window")
+
     def process_event(self, event):
         handled = super().process_event(event)
 
