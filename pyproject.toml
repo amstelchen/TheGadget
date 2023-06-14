@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "thegadget"
-version = "0.6.0"
+version = "0.6.1"
 description = "A strategic simulation, written in Python."
 authors = ["Michael John <michael.john@gmx.at>"]
 license = "MIT"
@@ -36,12 +36,14 @@ pygame-menu-ce = "^4.4.3"
 # msvc-runtime
 pygame-animatedgif = "^0.1.0"
 moviepy = "^1.0.3"
+py-staticmaps = "^0.4.0"
 
 [tool.poetry.dev-dependencies]
 
 [tool.poetry.group.dev.dependencies]
 beautifulsoup4 = "^4.12.2"
 python-gettext = "^5.0"
+osmnx = "^1.4.0"
 
 [build-system]
 requires = ["poetry-core"]
