@@ -24,6 +24,7 @@ from .utils import Data, SVG
 from .stats import PlayerStats
 from .gui import GUIWindow, ControlsWindow, StatusWindow, EventWindow, PersonWindow
 from .tech import TechWindow
+from .site import SiteWindow
 from pygame_gui.elements import UIImage, UILabel
 
 from pygame_animatedgif import AnimatedGifSprite
@@ -256,6 +257,21 @@ class Game():
                                 pos=(border_wide, border_wide), 
                                 size=(self.screen.get_width() - border_wide * 2, 800), 
                                 techtree=tech_data, progress=self.research_progress)
+
+                    # checking if key "O" was pressed
+                    if event.key == pygame.K_o:
+                        logging.debug("Key O has been pressed")
+                        try:
+                            # if not self.guiopedia_window.alive():
+                            self.guiopedia_window.kill()
+                        except AttributeError:
+                            pass
+                        finally:
+                            self.site_window = SiteWindow(
+                                manager=self.manager, title="Site", 
+                                pos=(border_wide, border_wide), 
+                                size=(self.screen.get_width() - border_wide * 2, 800), 
+                                sitedata=places_data, progress=self.research_progress)
 
                     # checking if key "W" was pressed
                     if event.key == pygame.K_w:
