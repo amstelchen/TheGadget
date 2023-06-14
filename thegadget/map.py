@@ -376,7 +376,7 @@ def main():
             results[name] = result
         # time.sleep(0.5)
 
-    save_results_to_file(results)
+    # save_results_to_file(results)
 
 if __name__ == '__main__':
     main()
