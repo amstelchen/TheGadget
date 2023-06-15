@@ -20,11 +20,9 @@ import cairosvg
 
 resources_path = os.path.join(os.path.dirname(__file__), 'resources')
 
-context = staticmaps.Context()
-context.set_tile_provider(staticmaps.tile_provider_OSM)
-
+#context = staticmaps.Context()
+#context.set_tile_provider(staticmaps.tile_provider_OSM)
 #frankfurt = staticmaps.create_latlng(50.110644, 8.682092)
-
 #context.add_object(staticmaps.Marker(frankfurt, color=staticmaps.GREEN, size=12))
 
 # render non-anti-aliased png
@@ -107,7 +105,10 @@ class SiteWindow(UIWindow):
 
         rem_width, rem_height = self.get_container().get_size()
 
-        lat, lon = float(sitedata[0][2]), float(sitedata[0][3])
+        context = staticmaps.Context()
+        context.set_tile_provider(staticmaps.tile_provider_OSM)
+
+        lat, lon = float(sitedata[2]), float(sitedata[3])
 
         #city = staticmaps.create_latlng(50.110644, 8.682092)
         city = staticmaps.create_latlng(lat, lon)

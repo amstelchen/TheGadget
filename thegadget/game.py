@@ -71,7 +71,7 @@ class Game():
         loader = Data(data_file)
         dates_data = loader.load_table_data("Dates", "ORDER BY event_date")
         people_data = loader.load_table_data("People")
-        places_data = loader.load_table_data("Places")
+        places_data = loader.load_table_data("Places", "WHERE cx IS NOT NULL")
         tech_data = loader.load_table_data("Projects")
         logging.debug(f"Loaded {len(dates_data)} dates, {len(people_data)} people, {len(places_data)} places.")
 
@@ -224,6 +224,32 @@ class Game():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    ignore_click = False
+                    pos = pygame.mouse.get_pos()
+                    x, y = pos
+                    if x > 960:
+                        # continue
+                        ignore_click = True
+                    logging.debug(f"MOUSEBUTTONUP at {pos}")
+                    places_tup = [(tup[4], tup[5]) for tup in places_data]
+                    nearest = min(places_tup, key=lambda point: (point[0] - pos[0])**2 + (point[1] - pos[1])**2)
+                    found = places_data[places_tup.index(nearest)]
+                    logging.debug(f"Found {found[1]} at {nearest}")
+                    try:
+                        # if not self.guiopedia_window.alive():
+                        self.site_window.kill()
+                    except AttributeError:
+                        pass
+                    finally:
+                        if not ignore_click:
+                            self.site_window = SiteWindow(
+                                manager=self.manager, title=found[1],
+                                pos=(border_wide, border_wide), 
+                                size=(self.screen.get_width() - border_wide * 2, 800), 
+                                sitedata=found, progress=self.research_progress)
+                        pygame.event.clear()
 
                 # checking if keydown event happened or not
                 if event.type == pygame.KEYDOWN:
