@@ -47,3 +47,6 @@ exec /usr/bin/$L
 #python -m build --wheel --no-isolation
 #updpkgsums
 #makepkg -fci
+
+poetry export --only main -f requirements.txt -o requirements.txt --without-hashes
+poetry export --with dev -f requirements.txt -o requirements-dev.txt --without-hashes
