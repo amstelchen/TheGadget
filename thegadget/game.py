@@ -28,7 +28,7 @@ from .site import SiteWindow
 from pygame_gui.elements import UIImage, UILabel
 
 from pygame_animatedgif import AnimatedGifSprite
-import moviepy.editor
+# import moviepy.editor
 
 # workaround to include Cairo on Windows
 os.environ['PATH'] += ";" + os.path.join(os.path.dirname(__file__), "resources", "dlls")
@@ -37,7 +37,7 @@ import cairosvg  # noqa: E402
 resources_path = os.path.join(os.path.dirname(__file__), 'resources')
 
 # video = moviepy.editor.VideoFileClip("/raid/Projekte/TheGadget/thegadget/resources/images/events/trinity_test.mpg")
-video = moviepy.editor.VideoFileClip(os.path.join(resources_path, 'images/events/trinity_test.mpg'))
+# video = moviepy.editor.VideoFileClip(os.path.join(resources_path, 'images/events/trinity_test.mpg'))
 
 border_thin = 25
 border_half = 50
@@ -355,18 +355,26 @@ class Game():
 
                     for date_event in dates_data:
                         # logging.debug(date_event)
-                        if datetime.datetime.combine(self.current_date, datetime.time(0, 0)) < datetime.datetime.strptime(date_event[1], "%Y-%m-%d"):
-                            logging.debug(f"next date_event {date_event[1]}")
-                            date_diff = (datetime.datetime.combine(self.current_date, datetime.time(0, 0)) - datetime.datetime.strptime(date_event[1], "%Y-%m-%d")).days * -1
-                            logging.debug(f"{date_diff = }")
+                        try:
+                            if datetime.datetime.combine(self.current_date, datetime.time(0, 0)) < datetime.datetime.strptime(date_event[1], "%Y-%m-%d"):
+                                logging.debug(f"next date_event {date_event[1]}")
+                                date_diff = (datetime.datetime.combine(self.current_date, datetime.time(0, 0)) - datetime.datetime.strptime(date_event[1], "%Y-%m-%d")).days * -1
+                                logging.debug(f"{date_diff = }")
+                                break
+                        except TypeError:
+                            logging.debug(f"No date set in record {date_event[0] = }, skipping.")
                             break
 
                     for people_event in people_data:
                         # logging.debug(people_event)
-                        if datetime.datetime.combine(self.current_date, datetime.time(0, 0)) < datetime.datetime.strptime(people_event[5], "%Y-%m-%d"):
-                            logging.debug(f"next people_event {people_event[5]}")
-                            date_diff = (datetime.datetime.combine(self.current_date, datetime.time(0, 0)) - datetime.datetime.strptime(people_event[5], "%Y-%m-%d")).days * -1
-                            logging.debug(f"{date_diff = }")
+                        try:
+                            if datetime.datetime.combine(self.current_date, datetime.time(0, 0)) < datetime.datetime.strptime(people_event[5], "%Y-%m-%d"):
+                                logging.debug(f"next people_event {people_event[5]}")
+                                date_diff = (datetime.datetime.combine(self.current_date, datetime.time(0, 0)) - datetime.datetime.strptime(people_event[5], "%Y-%m-%d")).days * -1
+                                logging.debug(f"{date_diff = }")
+                                break
+                        except TypeError:
+                            logging.debug(f"No date set in record {people_event[0] = }, skipping.")
                             break
 
                     self.status_window.hide()
@@ -397,7 +405,7 @@ class Game():
                             text=f"{date_event[1]}\n\n{date_event[3]}")
                             # image=eventImage)
 
-                            if date_event[0] == 7:
+                            if date_event[2].startswith("Trinity Test"):
                                 self.manager.draw_ui(self.window)
                                 pygame.display.update()
                                 #for i in range(int(317)):
