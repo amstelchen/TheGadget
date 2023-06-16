@@ -38,6 +38,7 @@ pygame-animatedgif = "^0.1.0"
 moviepy = "^1.0.3"
 py-staticmaps = "^0.4.0"
 pycairo = "^1.23.0"
+pillow = "8.4.0"
 
 [tool.poetry.dev-dependencies]
 
@@ -46,6 +47,8 @@ beautifulsoup4 = "^4.12.2"
 python-gettext = "^5.0"
 osmnx = "^1.4.0"
 nltk = "^3.8.1"
+matplotlib = "^3.7.1"
+basemap = "^1.3.7"
 
 [build-system]
 requires = ["poetry-core"]
