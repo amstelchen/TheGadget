@@ -447,7 +447,7 @@ class Game():
                                 text=f"{people_event[1]} joined the Manhattan Project.\n\n{people_event[4]}<br><br>Born: {born},\n{people_event[3]}")
                                 # image=charImage)
 
-                            charImage = people_event[6]
+                            charImage = people_event[7]
                             self.image = UIImage(
                                 relative_rect=pygame.Rect(
                                     (10, 10),
@@ -483,6 +483,18 @@ class Game():
         logging.debug("Quitting.")
         pygame.quit()
 
+    def load_dummy_person(self) -> pygame.surface.Surface:
+        image_path = os.path.join(os.path.dirname(__file__), 'resources', 'images')
+        image_dummy = load(os.path.join(image_path, "No_avatar.png"))
+        image_dummy = pygame.transform.scale(image_dummy, (200, 200 * image_dummy.get_height() / image_dummy.get_width()))
+        return image_dummy.convert()
+
+    def load_dummy_event(self) -> pygame.surface.Surface:
+        image_path = os.path.join(os.path.dirname(__file__), 'resources', 'images', 'events')
+        image_dummy = load(os.path.join(image_path, "No_event.png"))
+        image_dummy = pygame.transform.scale(image_dummy, (420, 420 * image_dummy.get_height() / image_dummy.get_width()))
+        return image_dummy.convert()
+
     def load_images(self, dataset, load_column, use_ext: str = '', image_width = None, subfolder = ''):
         if use_ext is None:
             use_ext = ''
@@ -493,7 +505,8 @@ class Game():
         image_count = 0
         for _, row in enumerate(dataset):
             if row[load_column] is None:
-                dataset[_] += (None,)
+                image_dummy = self.load_dummy_event()
+                dataset[_] += (image_dummy,)
                 continue
             if os.path.isfile(os.path.join(image_path, row[load_column]) + str(use_ext)):
                 image = load(os.path.join(image_path, row[load_column]) + str(use_ext))
@@ -503,7 +516,12 @@ class Game():
                 dataset[_] += (image,)
                 image_count += 1
             else:
-                logging.debug(f"No image data for {row[load_column]}.")
+                logging.debug(f"No image data for {row[load_column]}. Dummy loaded.")
+                if subfolder == "events":
+                    image_dummy = self.load_dummy_event()
+                else:
+                    image_dummy = self.load_dummy_person()
+                dataset[_] += (image_dummy,)
 
         return image_count
             #else:

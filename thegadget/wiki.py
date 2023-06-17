@@ -94,7 +94,7 @@ def query_name(name):
             return "No results found for this name."
         else:
             logging.info(result['query']['pages']['-1']['imageinfo'][0]['extmetadata']['LicenseShortName']['value'])
-    except (AttributeError, IndexError):
+    except (AttributeError, IndexError, KeyError):
         return None
 
 def save_results_to_file(results):
@@ -108,7 +108,7 @@ def main():
     loader = Data(os.path.join(os.path.dirname(__file__), 'resources', 'database', PROGNAME + ".db"))
     # people_data = loader.load_table_data("People", "WHERE description IS NULL")
     # for testing
-    people_data = loader.load_table_data("People", "WHERE person_id > 60")
+    people_data = loader.load_table_data("People", "WHERE join_date IS NULL")
 
     # Generate the names
     name_list =  []
