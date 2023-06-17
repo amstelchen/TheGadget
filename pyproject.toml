@@ -20,6 +20,7 @@ exclude = [
 
 [tool.poetry.scripts]
 thegadget = 'thegadget.__main__:main'
+TheGadget = 'thegadget.__main__:main'
 
 [tool.poetry.dependencies]
 python = "^3.8"
