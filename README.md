@@ -153,6 +153,45 @@ The "Projects" table represents individual projects within the Manhattan Project
 
 This table layout allows for the organization and retrieval of data related to the various entities and their relationships in the game, facilitating gameplay mechanics, historical accuracy, and data management.
 
+#### Installation
+
+Steps assume that `python` (>= 3.8) and `pip` are already installed.
+
+Install dependencies (see sections below)
+
+Then, run:
+
+    $ pip install TheGadget
+
+Install directly from ``github``:
+
+    $ pip install git+https://github.com/amstelchen/TheGadget#egg=TheGadget
+
+When completed, run it with:
+
+    $ TheGadget
+
+#### Dependencies
+
+On Debian-based distributions (Mint, Ubuntu, MX, etc.), installation of the following packages may be necessary:
+
+    $ sudo apt-get install libcairo2-dev libjpeg-dev libgif-dev
+
+Notably, it often helps to keep your python installation updated:
+
+    $ python -m pip install --upgrade pip wheel setuptools
+
+#### System requirements
+
+"The Gadget" is tested to work on the following distributions (and derivates):
+
+- Ubuntu (and derivates: Kubuntu, Xubuntu, Pop!_OS) 20.04 or newer
+- Debian 11 or newer
+- Linux Mint 20 or newer
+- Arch Linux (and derivates: Manjaro, ArcoLinux)
+- Windows 10/11
+- Windows 7 (needs a patched Python)
+
 #### Reporting bugs
 
 If you encounter any bugs or incompatibilities, __please report them [here](https://github.com/amstelchen/TheGadget/issues/new)__.
