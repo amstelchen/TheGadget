@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "thegadget"
-version = "0.6.1"
+version = "0.7.0"
 description = "A strategic simulation, written in Python."
 authors = ["Michael John <michael.john@gmx.at>"]
 license = "MIT"
@@ -50,6 +50,10 @@ osmnx = "^1.4.0"
 nltk = "^3.8.1"
 matplotlib = "^3.7.1"
 basemap = "^1.3.7"
+osmpythontools = "^0.3.5"
+urllib3 = "1.26"
+shapely = "^2.0.1"
+geopandas = "^0.13.2"
 
 [build-system]
 requires = ["poetry-core"]
