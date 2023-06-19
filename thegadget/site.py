@@ -2,6 +2,7 @@ import os
 import re
 import io
 import tempfile
+import logging
 
 from collections import OrderedDict
 from os import listdir, linesep
@@ -17,6 +18,7 @@ from pygame_gui.elements import UITextBox, UIWindow, UITextEntryLine, UILabel, U
 from .utils import Data
 import staticmaps
 import cairosvg
+import geopandas
 
 resources_path = os.path.join(os.path.dirname(__file__), 'resources')
 
@@ -39,7 +41,7 @@ resources_path = os.path.join(os.path.dirname(__file__), 'resources')
 #    svg_image.write(f, pretty=True)
 
 class SiteWindow(UIWindow):
-    def __init__(self, manager, title, pos: tuple, size: tuple, sitedata, progress: dict):
+    def __init__(self, manager, title, pos: tuple, size: tuple, sitedata, buildings, zoom = 15):
         super().__init__(
             Rect(
                 pos, size),  # (200, 50), (420, 520)),
@@ -104,12 +106,52 @@ class SiteWindow(UIWindow):
         #self.page_y_start_pos += 100
 
         rem_width, rem_height = self.get_container().get_size()
+        logging.debug(f"{rem_width = }, {rem_height = }")
 
         context = staticmaps.Context()
         context.set_tile_provider(staticmaps.tile_provider_OSM)
 
+        # (22, 'Chalk River, Quebec, Canada', 46.050242, -77.361002, 918.22, 175.54, "...", None, 15)
+        # lat, lon = 46.050242, -77.361002
         lat, lon = float(sitedata[2]), float(sitedata[3])
+        logging.debug(f"{lat = }, {lon = }")
 
+        # sitedata_coords = buildings
+        """
+        coords_polygon = [
+            (46.0495029, -77.3626987),
+            (46.049103, -77.3625964),
+            (46.0492681, -77.3612548),
+            (46.0496682, -77.3613571),
+            (46.0495029, -77.3626987),
+        ]
+        coords_polygon = [(-77.3626987, 46.0495029), (-77.3625964, 46.049103), (-77.3612548, 46.0492681), (-77.3613571, 46.0496682), (-77.3626987, 46.0495029)]
+        context.add_object(
+            staticmaps.Area(
+                [staticmaps.create_latlng(lat, lng) for lat, lng in coords_polygon],
+                fill_color=staticmaps.parse_color("#00FF003F"),
+                width=2,
+                color=staticmaps.BLUE,
+            )
+        )
+        """
+        print(f"{buildings = }")
+        # for coords_polygon in sitedata_coords:
+        
+        # irgendwo wird lat und lon vertauscht, darum unten auch getauscht:
+        for building in buildings:
+            coords_polygon = list(building)
+            print(f"{coords_polygon = }")
+            context.add_object(
+                staticmaps.Area(
+                    [staticmaps.create_latlng(lng, lat) for lat, lng in coords_polygon],
+                    fill_color=staticmaps.parse_color("#00FF003F"),
+                    width=2,
+                    color=staticmaps.BLUE,
+                )
+            )
+        
+        context.set_zoom(zoom)
         #city = staticmaps.create_latlng(50.110644, 8.682092)
         city = staticmaps.create_latlng(lat, lon)
 
@@ -117,7 +159,7 @@ class SiteWindow(UIWindow):
         #context.add_object(staticmaps.)
 
         # render non-anti-aliased png
-        #image = context.render_pillow(800, 500)
+        #image = context.render_pillow(rem_width, rem_height)
 
         # render anti-aliased png (this only works if pycairo is installed)
         image = context.render_cairo(rem_width, rem_height)

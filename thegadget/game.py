@@ -30,6 +30,9 @@ from pygame_gui.elements import UIImage, UILabel
 from pygame_animatedgif import AnimatedGifSprite
 # import moviepy.editor
 
+from shapely.wkt import loads
+from shapely.geometry import Polygon, mapping
+
 # workaround to include Cairo on Windows
 os.environ['PATH'] += ";" + os.path.join(os.path.dirname(__file__), "resources", "dlls")
 import cairosvg  # noqa: E402
@@ -72,8 +75,13 @@ class Game():
         dates_data = loader.load_table_data("Dates", "ORDER BY event_date")
         people_data = loader.load_table_data("People")
         places_data = loader.load_table_data("Places", "WHERE cx IS NOT NULL")
+        buildings_data = loader.load_table_data("Buildings", "WHERE coords_polygon IS NOT NULL")
         tech_data = loader.load_table_data("Projects")
-        logging.debug(f"Loaded {len(dates_data)} dates, {len(people_data)} people, {len(places_data)} places.")
+        logging.debug(f"Loaded \
+            {len(dates_data)} dates, \
+            {len(people_data)} people, \
+            {len(places_data)} places, \
+            {len(buildings_data)}.")
 
         image_count1 = self.load_images(dates_data, 4, None, 420, 'events')
         image_count2 = self.load_images(people_data, 1, '.png', 200, None)
@@ -235,8 +243,12 @@ class Game():
                     logging.debug(f"MOUSEBUTTONUP at {pos}")
                     places_tup = [(tup[4], tup[5]) for tup in places_data]
                     nearest = min(places_tup, key=lambda point: (point[0] - pos[0])**2 + (point[1] - pos[1])**2)
-                    found = places_data[places_tup.index(nearest)]
-                    logging.debug(f"Found {found[1]} at {nearest}")
+                    found_place = places_data[places_tup.index(nearest)]
+                    zoom_level = found_place[8]
+                    # buildings = [b[4] for b in buildings_data if b[2] == found_place[0]]
+                    buildings = [mapping(loads(b[4]))['coordinates'][0] for b in buildings_data if b[2] == found_place[0]]
+                    logging.debug(f"Found {found_place[1]} at {nearest}, {found_place[2]},{found_place[3]}")
+                    logging.debug(f"Buildings: {buildings}")
                     try:
                         # if not self.guiopedia_window.alive():
                         self.site_window.kill()
@@ -245,10 +257,10 @@ class Game():
                     finally:
                         if not ignore_click:
                             self.site_window = SiteWindow(
-                                manager=self.manager, title=found[1],
+                                manager=self.manager, title=found_place[1],
                                 pos=(border_wide, border_wide), 
                                 size=(self.screen.get_width() - border_wide * 2, 800), 
-                                sitedata=found, progress=self.research_progress)
+                                sitedata=found_place, buildings=buildings, zoom=zoom_level)
                         pygame.event.clear()
 
                 # checking if keydown event happened or not

@@ -7,6 +7,8 @@ class Data():
 
     def load_table_data(self, table_name, extra_sql = None):
         conn = sqlite3.connect(self.db_file)
+        conn.enable_load_extension(True)
+        conn.load_extension("mod_spatialite")
         cursor = conn.cursor()
 
         cursor.execute(f"SELECT * FROM {table_name} {extra_sql}")
@@ -18,6 +20,8 @@ class Data():
 
     def update_table_data(self, table_name, extra_sql = None):
         conn = sqlite3.connect(self.db_file)
+        conn.enable_load_extension(True)
+        conn.load_extension("mod_spatialite")
         cursor = conn.cursor()
 
         cursor.execute(f"UPDATE {table_name} SET {extra_sql}")
