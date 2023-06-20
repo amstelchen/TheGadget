@@ -24,6 +24,7 @@ from .utils import Data, SVG
 from .stats import PlayerStats
 from .gui import GUIWindow, ControlsWindow, StatusWindow, EventWindow, PersonWindow
 from .tech import TechWindow
+from .intel import IntelWindow
 from .site import SiteWindow
 from pygame_gui.elements import UIImage, UILabel
 
@@ -31,7 +32,7 @@ from pygame_animatedgif import AnimatedGifSprite
 # import moviepy.editor
 
 from shapely.wkt import loads
-from shapely.geometry import Polygon, mapping
+from shapely.geometry import mapping
 
 # workaround to include Cairo on Windows
 os.environ['PATH'] += ";" + os.path.join(os.path.dirname(__file__), "resources", "dlls")
@@ -77,6 +78,7 @@ class Game():
         places_data = loader.load_table_data("Places", "WHERE cx IS NOT NULL")
         buildings_data = loader.load_table_data("Buildings", "WHERE coords_polygon IS NOT NULL")
         tech_data = loader.load_table_data("Projects")
+        intel_data = loader.load_table_data("People", "WHERE espionage == 1")
         logging.debug(f"Loaded \
             {len(dates_data)} dates, \
             {len(people_data)} people, \
@@ -85,6 +87,7 @@ class Game():
 
         image_count1 = self.load_images(dates_data, 4, None, 420, 'events')
         image_count2 = self.load_images(people_data, 1, '.png', 200, None)
+        image_count3 = self.load_images(intel_data, 1, '.png', 200, None)
         logging.debug(f"Loaded images: {image_count1} dates, {image_count2} people.") # , {len(places_data)} places.")
 
         # Initialize Pygame, now handled in main()
@@ -114,6 +117,13 @@ class Game():
                                     ])
 
         self.research_progress = { 1: 100, 2: 80, 3: 40, 4: 25, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 }
+        self.intel_progress = { intel_data[a][0] : 0 for a in range(len(intel_data))}
+        # debug
+        self.intel_progress[9] = 100
+        self.intel_progress[71] = 70
+        self.intel_progress[75] = 100
+        self.intel_progress[78] = 60
+        self.intel_progress[80] = 70
 
         # Game variables
         running = True
@@ -234,6 +244,7 @@ class Game():
                     running = False
                 
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    # and event. ui_object_id == '#intel_window.#tech_button':
                     ignore_click = False
                     pos = pygame.mouse.get_pos()
                     x, y = pos
@@ -295,6 +306,21 @@ class Game():
                                 pos=(border_wide, border_wide), 
                                 size=(self.screen.get_width() - border_wide * 2, 800), 
                                 techtree=tech_data, progress=self.research_progress)
+
+                    # checking if key "I" was pressed
+                    if event.key == pygame.K_i:
+                        logging.debug("Key I has been pressed")
+                        try:
+                            # if not self.guiopedia_window.alive():
+                            self.guiopedia_window.kill()
+                        except AttributeError:
+                            pass
+                        finally:
+                            self.research_window = IntelWindow(
+                                manager=self.manager, title="Research", 
+                                pos=(border_wide, border_wide), 
+                                size=(self.screen.get_width() - border_wide * 2, 800), 
+                                intel_info=intel_data, intel_progress=self.intel_progress)
 
                     # checking if key "O" was pressed
                     if event.key == pygame.K_o:

@@ -1,4 +1,41 @@
 import sqlite3
+import random
+import pygame
+
+def garble_text(text, percentage):
+    garbled_text = ""
+    for char in text:
+        if char.isspace():  # Preserve whitespace
+            garbled_text += char
+        elif random.random() < percentage:
+            garbled_text += random.choice('abcdefghijklmnopqrstuvwxyz')
+        else:
+            garbled_text += char
+    return garbled_text
+
+"""Example usage:
+original_text = "This is a test sentence."
+garbled_percentage = 0.2  # 20% garbling
+
+garbled_text = garble_text(original_text, garbled_percentage)
+print(garbled_text)
+"""
+
+def overlay_surfaces(background_surface, overlay_surface):
+    # Create a new surface with the same size as the background surface
+    merged_surface = pygame.Surface(background_surface.get_size(), pygame.SRCALPHA)
+
+    # Calculate the coordinates to center the overlay surface on the background surface
+    overlay_x = (background_surface.get_width() - overlay_surface.get_width()) // 2
+    overlay_y = (background_surface.get_height() - overlay_surface.get_height()) // 2
+
+    # Blit the background surface onto the merged surface
+    merged_surface.blit(background_surface, (0, 0))
+
+    # Blit the overlay surface onto the merged surface at the calculated coordinates
+    merged_surface.blit(overlay_surface, (overlay_x, overlay_y))
+
+    return merged_surface
 
 
 class Data():
