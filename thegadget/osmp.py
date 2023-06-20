@@ -21,6 +21,8 @@ def query_place(place):
         osm_id = nominatim.query(place)._json[0]['osm_id']
     if osm_id is None:
         return
+    if str(osm_id).startswith("369"):
+        return
     logging.debug(f"{osm_id = }")
     start = time.time()
     way = api.query(f'way/{osm_id}', onlyCached=False, shallow=False, history=False)
