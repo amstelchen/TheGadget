@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "thegadget"
-version = "0.7.0"
+version = "0.8.0"
 description = "A strategic simulation, written in Python."
 authors = ["Michael John <michael.john@gmx.at>"]
 license = "MIT"
@@ -26,7 +26,7 @@ TheGadget = 'thegadget.__main__:main'
 python = "^3.8"
 # removed due to incompatibilities: pygame = "^2.4.0"
 python-gettext = "^5.0"
-pygame-ce = "^2.2.1"
+pygame-ce = "^2.3.0"
 pygame-gui = "^0.6.9"
 cairosvg = "^2.7.0"
 # removed due to incompatibilities: pygame-menu = "^4.4.3"
@@ -35,7 +35,8 @@ pygame-menu-ce = "^4.4.3"
 # matplotlib
 # basemap
 # msvc-runtime
-pygame-animatedgif = "^0.1.0"
+# removed due to incompatibilities
+#pygame-animatedgif = "^0.1.0"
 moviepy = "^1.0.3"
 py-staticmaps = "^0.4.0"
 pycairo = "^1.23.0"
@@ -46,6 +47,8 @@ pillow = "8.4.0"
 [tool.poetry.group.dev.dependencies]
 beautifulsoup4 = "^4.12.2"
 python-gettext = "^5.0"
+pygame-ce = "^2.3.0"
+pygame-gui = "^0.6.9"
 osmnx = "^1.4.0"
 nltk = "^3.8.1"
 matplotlib = "^3.7.1"
