@@ -195,3 +195,6 @@ select AsText(Envelope(b.coords_polygon)) from Buildings b
 
 select b.building_id, ST_AsText(coords_text), GeometryType(b.coords_polygon) from Buildings b 
 
+update Places set workers =
+ABS(RANDOM())%(8500-250) + 250
+where workers IS NULL
