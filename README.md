@@ -117,6 +117,50 @@ Here's a basic research tree for the development of the Trinity bomb, the first 
 
 Each branch of the research tree represents a different area of scientific and engineering focus required for the development of the Trinity bomb. It is important to note that this is a simplified representation, and the actual research and development process involved extensive experimentation, testing, and collaboration among various scientists, engineers, and facilities.
 
+#### Concept: Anti-Espionage Challenge
+
+Overview:
+In this game, players take on the role of an elite anti-espionage agent tasked with identifying and neutralizing enemy spies. The game combines elements of strategy, deduction, and problem-solving to create an engaging and immersive experience.
+
+Gameplay:
+
+    Objective:
+        Identify and capture enemy spies hidden among innocent civilians.
+        Prevent classified information from falling into enemy hands.
+        Maintain the security and integrity of your organization.
+
+    Mechanics:
+        Investigation: Gather intelligence, analyze clues, and interrogate suspects to uncover information about potential spies.
+        Surveillance: Monitor suspicious activities, track movements, and identify patterns to narrow down the suspects.
+        Counterintelligence: Implement security measures, encrypt communications, and set up traps to deceive and apprehend enemy spies.
+        Team Management: Recruit and train agents with specialized skills, assign them to missions, and coordinate their actions to maximize efficiency.
+
+    Gameplay Elements:
+        Missions: Engage in a series of missions set in various locations, each with unique challenges and objectives.
+        Clues and Puzzles: Solve puzzles, decode secret messages, and analyze hidden clues to uncover spy identities and their plans.
+        Time Management: Allocate resources effectively, prioritize tasks, and make quick decisions to stay ahead of enemy activities.
+        Risk vs. Reward: Balance the need for capturing spies swiftly with the risk of exposing your agents or innocent civilians.
+        Tech Upgrades: Unlock and upgrade surveillance equipment, encryption tools, and other gadgets to enhance your capabilities.
+
+    Challenges:
+        Suspect Identification: Use deductive reasoning, observation skills, and psychological profiling to identify potential spies.
+        Double Agents: Watch out for double agents within your own organization who may sabotage your efforts.
+        Covert Operations: Infiltrate enemy hideouts, gather evidence, and disrupt their operations without raising suspicion.
+        Time Pressure: Complete missions within a limited timeframe, preventing enemy spies from executing their plans.
+        Consequences: Deal with the consequences of failed missions, compromised security, and potential public backlash.
+
+    Progression and Rewards:
+        Advancement: Gain experience, level up your agent, and unlock new abilities, tools, and missions.
+        Achievements: Accomplish specific objectives, solve challenging puzzles, and earn rewards and recognition.
+        Leaderboards: Compete with other players worldwide and strive for the highest scores and rankings.
+
+    Game Modes:
+        Story Mode: Embark on an immersive campaign with a captivating storyline, engaging characters, and plot twists.
+        Challenge Mode: Take on specific missions or scenarios with predefined objectives and constraints for added replayability.
+        Multiplayer Mode: Collaborate or compete with friends in cooperative or competitive multiplayer modes.
+
+By combining elements of espionage, strategy, and problem-solving, the Anti-Espionage Challenge offers players an exciting and immersive experience as they work to protect their organization, gather intelligence, and outsmart enemy spies. The game encourages critical thinking, strategic planning, and effective decision-making to succeed in the challenging world of counterintelligence.
+
 #### SQLite table layout
 
 To design an SQLite table layout for a strategy game incorporating the places, people, technology, and dates related to the Manhattan Project, you can create separate tables for each entity and establish relationships between them using primary and foreign keys. Here's a suggested table layout:
@@ -145,11 +189,18 @@ To design an SQLite table layout for a strategy game incorporating the places, p
     Table: Project_Places
         Columns: project_id (Foreign Key referencing Projects.project_id), place_id (Foreign Key referencing Places.place_id)
 
-In this table layout, the "Places" table stores information about the different locations related to the Manhattan Project, including their latitude and longitude coordinates. The "People" table contains details about the individuals involved, including their birth date and birth place, which is linked to the "Places" table through a foreign key relationship.
+    Table: Buildings
+        Columns: building_id (Primary Key), name, coords_polygon, place_id (Foreign Key referencing Places.place_id)
+
+In this table layout, the "Places" table stores information about the different locations related to the Manhattan Project, including their latitude and longitude coordinates.
+
+The "People" table contains details about the individuals involved, including their birth date and birth place, which is linked to the "Places" table through a foreign key relationship.
 
 The "Technology" table holds information about the various technologies or scientific advancements relevant to the project. The "Dates" table stores significant dates and corresponding descriptions.
 
 The "Projects" table represents individual projects within the Manhattan Project, with start and end dates linked to the "Dates" table. The "Project_People," "Project_Technology," and "Project_Places" tables establish many-to-many relationships between projects, people, technologies, and places.
+
+The "Buildings" table stores information about the different buildings on each site related to the Manhattan Project, including their polygon coordinates for each building.
 
 This table layout allows for the organization and retrieval of data related to the various entities and their relationships in the game, facilitating gameplay mechanics, historical accuracy, and data management.
 
