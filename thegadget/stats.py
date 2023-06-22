@@ -64,13 +64,14 @@ class PlayerStats:
         with open(file_path, "w") as file:
             json.dump(data, file)
 
-    @classmethod
+    #@classmethod
     def load(cls, file_path):
         with open(file_path, "r") as file:
             data = json.load(file)
-        start_date = datetime.datetime.strptime(data["start_date"], "%Y-%m-%d").date()
-        stats = cls(start_date)
-        stats.research_progress = data["research_progress"]
+        stats = cls
+        stats.start_date = datetime.datetime.strptime(data["start_date"], "%Y-%m-%d").date()
+        stats.current_date = datetime.datetime.strptime(data["current_date"], "%Y-%m-%d").date()
+        stats.research_progress = { int(key): int(val) for key, val in data["research_progress"].items() }
         stats.places = data["places"]
         return stats
 

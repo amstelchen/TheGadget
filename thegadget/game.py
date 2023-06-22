@@ -335,7 +335,8 @@ class Game():
                     if event.key == pygame.K_w:
                         logging.debug("Key W has been pressed")
                         days_gone += 7
-                        self.stats.research_progress[6] += 10
+                        # self.stats.research_progress[6] += 10
+                        self.stats.increase_research_progress(6, 10)
                     
                     # checking if key "E" was pressed
                     if event.key == pygame.K_e:
@@ -363,6 +364,23 @@ class Game():
                             self.notify_window = NotifyWindow(
                                     self.manager, "", (self.window.get_width() // 2 - 200 + border_thin, self.window.get_height() // 2 - 150), (400, 300),
                                 text="Game saved.")
+
+                    # checking if key "L" was pressed
+                    if event.key == pygame.K_l:
+                        logging.debug("Key L has been pressed")
+                        if sys.platform == 'linux':
+                            load_file = os.path.join(str(Path('~').expanduser()), ".config", PROGNAME, "game_stats.json")
+                        self.stats = self.stats.load(load_file)
+                        days_gone = (self.stats.current_date - self.stats.start_date).days
+                        logging.debug("Game loaded.")
+                        try:
+                            self.notify_window.kill()
+                        except AttributeError:
+                            pass
+                        finally:
+                            self.notify_window = NotifyWindow(
+                                    self.manager, "", (self.window.get_width() // 2 - 200 + border_thin, self.window.get_height() // 2 - 150), (400, 300),
+                                text="Game loaded.")
 
                     # checking if key "M" was pressed
                     if event.key == pygame.K_m:
