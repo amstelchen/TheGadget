@@ -28,7 +28,7 @@ from .intel import IntelWindow
 from .site import SiteWindow
 from pygame_gui.elements import UIImage, UILabel
 
-from pygame_animatedgif import AnimatedGifSprite
+# from pygame_animatedgif import AnimatedGifSprite
 # import moviepy.editor
 
 from shapely.wkt import loads
@@ -176,9 +176,9 @@ class Game():
 
         self.controls_window = ControlsWindow(manager=self.manager, title="Controls", pos=(self.screen.get_width() - 500 - border_thin, 700), size=(500, 350), page="controls")
 
-        self.ani_gif = AnimatedGifSprite((self.window.get_width() // 2 - 400, self.window.get_height() // 2 - 200), os.path.join(os.path.dirname(__file__), 'resources', 'images', 'events', 'TrinityDetonation1945GIF.gif'))
-        self.sprite_group = pygame.sprite.Group()
-        self.sprite_group.add(self.ani_gif)
+        # self.ani_gif = AnimatedGifSprite((self.window.get_width() // 2 - 400, self.window.get_height() // 2 - 200), os.path.join(os.path.dirname(__file__), 'resources', 'images', 'events', 'TrinityDetonation1945GIF.gif'))
+        # self.sprite_group = pygame.sprite.Group()
+        # self.sprite_group.add(self.ani_gif)
 
         bg_color = (0, 0, 0)
 

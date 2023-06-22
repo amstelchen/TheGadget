@@ -41,6 +41,7 @@ moviepy = "^1.0.3"
 py-staticmaps = "^0.4.0"
 pycairo = "^1.23.0"
 pillow = "8.4.0"
+geopandas = "^0.13.2"
 # https://github.com/python-poetry/poetry/issues/7936#issuecomment-1556767769
 urllib3 = "<=2.0"
 
