@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "thegadget"
-version = "0.8.0"
+version = "0.9.0"
 description = "A strategic simulation, written in Python."
 authors = ["Michael John <michael.john@gmx.at>"]
 license = "MIT"
@@ -41,6 +41,8 @@ moviepy = "^1.0.3"
 py-staticmaps = "^0.4.0"
 pycairo = "^1.23.0"
 pillow = "8.4.0"
+# https://github.com/python-poetry/poetry/issues/7936#issuecomment-1556767769
+urllib3 = "<=2.0"
 
 [tool.poetry.dev-dependencies]
 
@@ -54,7 +56,8 @@ nltk = "^3.8.1"
 matplotlib = "^3.7.1"
 basemap = "^1.3.7"
 osmpythontools = "^0.3.5"
-urllib3 = "1.26"
+# https://github.com/python-poetry/poetry/issues/7936#issuecomment-1556767769
+urllib3 = "<=2.0"
 shapely = "^2.0.1"
 geopandas = "^0.13.2"
 
