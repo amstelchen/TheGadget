@@ -22,7 +22,7 @@ import io
 from .__version__ import PROGNAME, FULLNAME, VERSION, AUTHOR, DESC, __appname__, __description_short__, __studioname__, __controls__
 from .utils import Data, SVG
 from .stats import PlayerStats
-from .gui import GUIWindow, ControlsWindow, StatusWindow, EventWindow, PersonWindow
+from .gui import GUIWindow, ControlsWindow, StatusWindow, EventWindow, PersonWindow, NotifyWindow
 from .tech import TechWindow
 from .intel import IntelWindow
 from .site import SiteWindow
@@ -66,10 +66,6 @@ class Game():
             "fullscreen": 1,
             "show_fps": 0
         }
-
-        self.loadDefaults()
-
-        self.stats = PlayerStats()
 
         data_file = os.path.join(resources_path, 'database', PROGNAME + ".db")
         loader = Data(data_file)
@@ -116,14 +112,12 @@ class Game():
                                     {'name': 'fira_code', 'point_size': 14, 'style': 'bold'}
                                     ])
 
-        self.research_progress = { 1: 100, 2: 80, 3: 40, 4: 25, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 }
-        self.intel_progress = { intel_data[a][0] : 0 for a in range(len(intel_data))}
-        # debug
-        self.intel_progress[9] = 100
-        self.intel_progress[71] = 70
-        self.intel_progress[75] = 100
-        self.intel_progress[78] = 60
-        self.intel_progress[80] = 70
+        self.loadDefaults()
+        self.stats = PlayerStats(intel_data=intel_data)
+
+        # debug dummy data for intel
+        self.stats.dummy_research_progress()
+        self.stats.dummy_intel_progress()
 
         # Game variables
         running = True
@@ -191,21 +185,21 @@ class Game():
         # pygame.display.flip()
 
         # Fictional date
-        start_date = datetime.date(1939, 8, 1)    # Szilard letter
+        #start_date = datetime.date(1939, 8, 1)    # Szilard letter
         #start_date = datetime.date(1939, 9, 30)  # Leo Szilard
         #start_date = datetime.date(1945, 7, 14)  # Trinity test
-        atest_date = datetime.date(1945, 7, 16)
-        final_date = datetime.date(1947, 8, 15)
+        #atest_date = datetime.date(1945, 7, 16)
+        #final_date = datetime.date(1947, 8, 15)
         #current_date = datetime.date(2023, 5, 24)
         
-        self.current_date = start_date
+        self.stats.current_date = self.stats.start_date
         days_gone = 0
 
         self.status_window = StatusWindow(
             self.manager, "Current Date",
             (self.window.get_width() // 2 - status_window_width // 2 + border_thin, self.window.get_height() - status_window_height),
             (status_window_width, status_window_height),
-            text=str(self.current_date))
+            text=str(self.stats.current_date))
         self.status_window.disable()
 
         # Game loop
@@ -232,7 +226,7 @@ class Game():
 
             self.text_hist = ""
 
-            #self.text = font_sml.render(f"Current Date: {current_date}", True, (0, 0, 0), Color("mediumaquamarine"))
+            #self.text = font_sml.render(f"Current Date: {self.stats.current_date}", True, (0, 0, 0), Color("mediumaquamarine"))
             #self.text_rect = self.text.get_rect(center=(self.window.get_width() // 2 + border_thin, self.window.get_height() - 50))
             #text.fill(pygame.color.Color("mediumaquamarine"))
 
@@ -278,7 +272,7 @@ class Game():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_c:
                         logging.debug("Key C has been pressed")
-                        self.research_progress[5] += 20
+                        self.stats.research_progress[5] += 20
                         #self.manager.process_events(event)
                         #self.manager.draw_ui(self.window)
                         #pygame.display.update()
@@ -305,7 +299,7 @@ class Game():
                                 manager=self.manager, title="Research", 
                                 pos=(border_wide, border_wide), 
                                 size=(self.screen.get_width() - border_wide * 2, 800), 
-                                techtree=tech_data, progress=self.research_progress)
+                                techtree=tech_data, progress=self.stats.research_progress)
 
                     # checking if key "I" was pressed
                     if event.key == pygame.K_i:
@@ -320,7 +314,7 @@ class Game():
                                 manager=self.manager, title="Research", 
                                 pos=(border_wide, border_wide), 
                                 size=(self.screen.get_width() - border_wide * 2, 800), 
-                                intel_info=intel_data, intel_progress=self.intel_progress)
+                                intel_info=intel_data, intel_progress=self.stats.intel_progress)
 
                     # checking if key "O" was pressed
                     if event.key == pygame.K_o:
@@ -335,19 +329,19 @@ class Game():
                                 manager=self.manager, title="Site", 
                                 pos=(border_wide, border_wide), 
                                 size=(self.screen.get_width() - border_wide * 2, 800), 
-                                sitedata=places_data, progress=self.research_progress)
+                                sitedata=places_data, progress=self.stats.research_progress)
 
                     # checking if key "W" was pressed
                     if event.key == pygame.K_w:
                         logging.debug("Key W has been pressed")
                         days_gone += 7
-                        self.research_progress[6] += 10
+                        self.stats.research_progress[6] += 10
                     
                     # checking if key "E" was pressed
                     if event.key == pygame.K_e:
-                        logging.debug("Key e has been pressed")
+                        logging.debug("Key E has been pressed")
                         days_gone += 31
-                        self.research_progress[6] += 20
+                        self.stats.research_progress[6] += 20
 
                     # checking if key "Q" was pressed
                     if event.key == pygame.K_q:
@@ -361,6 +355,14 @@ class Game():
                             save_file = os.path.join(str(Path('~').expanduser()), ".config", PROGNAME, "game_stats.json")
                         self.stats.save(save_file)
                         logging.debug("Game saved.")
+                        try:
+                            self.notify_window.kill()
+                        except AttributeError:
+                            pass
+                        finally:
+                            self.notify_window = NotifyWindow(
+                                    self.manager, "", (self.window.get_width() // 2 - 200 + border_thin, self.window.get_height() // 2 - 150), (400, 300),
+                                text="Game saved.")
 
                     # checking if key "M" was pressed
                     if event.key == pygame.K_m:
@@ -386,17 +388,17 @@ class Game():
                         finally:
                             self.guiopedia_window = GUIWindow(manager=self.manager, title=FULLNAME, pos=(self.screen.get_width() - 500 - border_thin, border_thin), size=(500, 800))
 
-                    self.current_date = start_date + datetime.timedelta(days=days_gone)
-                    logging.debug(f"{self.current_date = }")
+                    self.stats.current_date = self.stats.start_date + datetime.timedelta(days=days_gone)
+                    logging.debug(f"{self.stats.current_date = }")
                     #print(current_date.strftime("%Y-%m-%d"))
                         #print(type(dates_data))
 
                     for date_event in dates_data:
                         # logging.debug(date_event)
                         try:
-                            if datetime.datetime.combine(self.current_date, datetime.time(0, 0)) < datetime.datetime.strptime(date_event[1], "%Y-%m-%d"):
+                            if datetime.datetime.combine(self.stats.current_date, datetime.time(0, 0)) < datetime.datetime.strptime(date_event[1], "%Y-%m-%d"):
                                 logging.debug(f"next date_event {date_event[1]}")
-                                date_diff = (datetime.datetime.combine(self.current_date, datetime.time(0, 0)) - datetime.datetime.strptime(date_event[1], "%Y-%m-%d")).days * -1
+                                date_diff = (datetime.datetime.combine(self.stats.current_date, datetime.time(0, 0)) - datetime.datetime.strptime(date_event[1], "%Y-%m-%d")).days * -1
                                 logging.debug(f"{date_diff = }")
                                 break
                         except TypeError:
@@ -406,9 +408,9 @@ class Game():
                     for people_event in people_data:
                         # logging.debug(people_event)
                         try:
-                            if datetime.datetime.combine(self.current_date, datetime.time(0, 0)) < datetime.datetime.strptime(people_event[5], "%Y-%m-%d"):
+                            if datetime.datetime.combine(self.stats.current_date, datetime.time(0, 0)) < datetime.datetime.strptime(people_event[5], "%Y-%m-%d"):
                                 logging.debug(f"next people_event {people_event[5]}")
-                                date_diff = (datetime.datetime.combine(self.current_date, datetime.time(0, 0)) - datetime.datetime.strptime(people_event[5], "%Y-%m-%d")).days * -1
+                                date_diff = (datetime.datetime.combine(self.stats.current_date, datetime.time(0, 0)) - datetime.datetime.strptime(people_event[5], "%Y-%m-%d")).days * -1
                                 logging.debug(f"{date_diff = }")
                                 break
                         except TypeError:
@@ -421,13 +423,13 @@ class Game():
                         self.manager, "Current Date",
                         (self.window.get_width() // 2 - status_window_width // 2 + border_thin, self.window.get_height() - status_window_height),
                         (status_window_width, status_window_height),
-                        text=str(self.current_date))
+                        text=str(self.stats.current_date))
                     self.status_window.disable()
 
                     #self.manager.ui_group.remove(self.status_window)
 
                     for date_event in dates_data:
-                        if self.current_date.strftime("%Y-%m-%d") == date_event[1]:
+                        if self.stats.current_date.strftime("%Y-%m-%d") == date_event[1]:
                             logging.debug("Date event found!")
                             self.text_hist = f"{date_event[1]}\n{date_event[2]}"
                             self.subtext = f"{date_event[3]}"
@@ -466,7 +468,7 @@ class Game():
                                 parent_element=self.event_window)
 
                     for people_event in people_data:
-                        if self.current_date.strftime("%Y-%m-%d") == people_event[5]:
+                        if self.stats.current_date.strftime("%Y-%m-%d") == people_event[5]:
                             logging.debug("Person event found!")
                             self.text_hist = f"{people_event[5]}\n{people_event[1]} joined the Manhattan Project."
                             self.subtext = f"{people_event[4]}"

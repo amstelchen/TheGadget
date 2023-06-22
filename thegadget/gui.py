@@ -57,6 +57,50 @@ class StatusWindow(UIWindow):
         return handled
 
 
+class NotifyWindow(UIWindow):
+    def __init__(self, manager, title, pos: tuple, size: tuple, text: str):
+        super().__init__(
+            Rect(
+                pos, size),  # (200, 50), (420, 520)),
+            manager,
+            window_display_title=title,
+            object_id="#notify_window")
+
+        self.remaining_window_size = (
+            self.get_container().get_size()[0],
+                (self.get_container().get_size()[1]))
+
+        self.page_y_start_pos = 0
+
+        self.page_display = UILabel(
+            text=text,
+            relative_rect=Rect(
+                (0, self.page_y_start_pos),
+                self.remaining_window_size),
+            manager=manager,
+            container=self,
+            parent_element=self)
+
+        self.page_display = UILabel(
+            text=text,
+            relative_rect=Rect(
+                (0, self.page_y_start_pos),
+                self.remaining_window_size),
+            manager=manager,
+            container=self,
+            parent_element=self,
+            object_id="#notify_window")
+
+    def process_event(self, event):
+        handled = super().process_event(event)
+
+        if (event.type == pygame_gui.UI_BUTTON_PRESSED and
+                event.ui_object_id == '#guiopedia_window.#home_button'):
+            self.open_new_page('index')
+            handled = True
+        return handled
+
+
 class EventWindow(UIWindow):
     def __init__(self, manager, title, pos: tuple, size: tuple, text: str, image: pygame.surface.Surface = None):
         super().__init__(
