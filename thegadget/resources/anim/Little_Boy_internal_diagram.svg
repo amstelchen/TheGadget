@@ -1,0 +1,113 @@
+<svg version="1.0" viewBox="0 0 964 238" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<defs>
+		<linearGradient id="b">
+			<stop stop-color="#fff" offset="0"/>
+			<stop stop-color="#fff" stop-opacity="0" offset="1"/>
+		</linearGradient>
+		<linearGradient id="g" x1="309" x2="271" y1="937" y2="938" gradientTransform="matrix(0 -.68 1 0 -85 316)" gradientUnits="userSpaceOnUse" xlink:href="#b"/>
+		<linearGradient id="f" x1="456" x2="456" y1="373" y2="323" gradientTransform="rotate(180 351 436)" gradientUnits="userSpaceOnUse" xlink:href="#b"/>
+	</defs>
+	<g stroke="#000">
+		<rect transform="scale(-1)" x="-963" y="-127" width="11" height="16" rx="4" ry="4" color="#000000" fill="#484318" stroke-linejoin="bevel" stroke-width="2.5"/>
+		<path d="m258 51-140-1e-5v135l140 2e-5 188 40h438c52 0 73-54 73-108s-22-108-73-108h-438z" color="#000000" fill="#aaa25c" stroke-width="2.5"/>
+		<path d="m271 56-97-1e-5v125l97 1e-5 179 37h429c49 0 70-50 70-100-0.19-50-21-100-70-100h-429z" color="#000000" fill="none" opacity=".6" stroke-dasharray="12.5, 3.125" stroke-width="3.1"/>
+		<g stroke-width="2.5">
+			<path d="m258 52v133" fill="none"/>
+			<rect transform="scale(-1)" x="-291" y="-160" width="107" height="83" color="#000000" fill="#686e77"/>
+			<rect transform="scale(-1)" x="-229" y="-142" width="33" height="47" rx="6.1" ry="6.1" color="#000000" fill="#3a565d" stroke-linejoin="bevel"/>
+		</g>
+	</g>
+	<rect transform="rotate(-90)" x="-169" y="127" width="98" height="45" color="#000000" fill="#958c35" opacity=".5"/>
+	<g fill="#aaa25c" stroke="#000" stroke-width="2.5">
+		<path d="m129 236 128-69h-135v64z" fill-rule="evenodd"/>
+		<path d="m129 2.4 128 69h-135v-64z" fill-rule="evenodd"/>
+		<rect x="1.2" y="1.2" width="127" height="235" color="#000000"/>
+	</g>
+	<g fill="none" stroke="#000" stroke-width="2.5">
+		<path d="m1 8h127m0 222h-127" color="#000000"/>
+		<path d="m448 10v216"/>
+		<path d="m665 10v216"/>
+	</g>
+	<g transform="translate(310 -398)">
+		<rect transform="scale(-1)" x="-575" y="-607" width="207" height="179" color="#000000" fill="#686e77" stroke="#000" stroke-width="2.5"/>
+		<rect transform="scale(-1)" x="-514" y="-569" width="91" height="104" color="#000000" fill="#3a465d" stroke="#000" stroke-width="2.5"/>
+		<path d="m575 490v53h-77v-53z" color="#000000" fill="#686e77"/>
+		<rect transform="scale(-1)" x="-498" y="-551" width="60" height="67" color="#000000" fill="#df0000"/>
+		<path d="m438 544h-519v-53h519z" color="#000000" fill="#686e77"/>
+		<path d="m438 536h-520v-37h520z" color="#000000" fill="url(#f)"/>
+	</g>
+	<g transform="translate(310 -398)" fill="none" stroke="#000" stroke-width="2.5">
+		<path d="m433 535-14-36" opacity=".3"/>
+		<path d="m413 535-14-36" opacity=".3"/>
+		<path d="m393 535-14-36" opacity=".3"/>
+		<path d="m373 535-14-36" opacity=".3"/>
+		<path d="m353 535-14-36" opacity=".3"/>
+		<path d="m333 535-14-36" opacity=".3"/>
+		<path d="m313 535-14-36" opacity=".3"/>
+		<path d="m293 535-14-36" opacity=".3"/>
+		<path d="m273 535-14-36" opacity=".3"/>
+		<path d="m253 535-14-36" opacity=".3"/>
+		<path d="m233 535-14-36" opacity=".3"/>
+		<path d="m213 535-14-36" opacity=".3"/>
+		<path d="m193 535-14-36" opacity=".3"/>
+		<path d="m173 535-14-36" opacity=".3"/>
+		<path d="m153 535-14-36" opacity=".3"/>
+		<path d="m133 535-14-36" opacity=".3"/>
+		<path d="m113 535-14-36" opacity=".3"/>
+		<path d="m93 535-14-36" opacity=".3"/>
+		<path d="m73 535-14-36" opacity=".3"/>
+		<path d="m53 535-14-36" opacity=".3"/>
+		<path d="m33 535-14-36" opacity=".3"/>
+		<path d="m13 535-14-36" opacity=".3"/>
+		<path d="m-7.4 535-14-36" opacity=".3"/>
+		<path d="m468 550v-65"/>
+	</g>
+	<path d="m806 137h-58v-36h58z" color="#000000" fill="#fff" opacity=".5"/>
+	<g transform="matrix(1 0 0 -1 -506 474)">
+		<rect x="735" y="336" width="48" height="37" color="#000000" fill="#d77a00"/>
+		<g fill="none" stroke="#ff0" stroke-width="2.5">
+			<path d="m777 337-6.4 35" opacity=".3"/>
+			<path d="m771 337-6.4 35" opacity=".3"/>
+			<path d="m765 337-6.4 35" opacity=".3"/>
+			<path d="m759 337-6.4 35" opacity=".3"/>
+			<path d="m753 337-6.4 35" opacity=".3"/>
+			<path d="m747 337-6.4 35" opacity=".3"/>
+			<path d="m741 337-6.4 35" opacity=".3"/>
+			<path d="m783 337-6.4 35" opacity=".3"/>
+		</g>
+	</g>
+	<path d="m748 146h-519v-53h519z" color="#000000" fill="none" stroke="#000" stroke-width="2.5"/>
+	<rect id="bod" x="-336" y="-137" width="61" height="37" color="#000000" fill="#df0000" transform="scale(-1)"/>
+	<path d="m807 138h-579v-37h579" color="#000000" fill="none" stroke="#000" stroke-width="2.5"/>
+	<path d="m275 137v-37m61 0v37" color="#000000" fill="none" stroke="#000" stroke-width="2.5"/>
+	<path d="m868 106v25h-60v-25z" color="#000000" fill="url(#g)"/>
+	<g stroke="#000">
+		<rect transform="scale(-1)" x="-808" y="-152" width="60" height="67" color="#000000" fill="none" stroke-width="2.5"/>
+		<g id="seg" transform="matrix(-1 0 0 -.55 1010 314)" fill="none" stroke-width="3.4">
+			<path d="m725 322v65"/>
+			<path d="m685 322v65"/>
+			<path d="m695 322v65"/>
+			<path d="m705 322v65"/>
+			<path d="m715 322v65"/>
+		</g>
+		<g stroke-width="2.5">
+			<path d="m806 125c-3.4 0-6.1-2.7-6.1-6.1s2.7-6.1 6.1-6.1" color="#000000" fill="#0000b0"/>
+			<path d="m735 171h-57m0-104h57" color="#000000" fill="#3a465d"/>
+			<path d="m721 227c-8.5 0-12-54-12-108 0.032-54 3.6-108 12-108" color="#000000" fill="none" opacity=".3" stroke-dasharray="10, 2.5"/>
+			<path d="m884 171h-60m0-104h60" color="#000000" fill="#3a465d"/>
+			<g transform="translate(310,-398)" fill="none">
+				<path d="m575 544h-77m0-53h77" color="#000000"/>
+				<path d="m498 529h59m0-24h-59" color="#000000"/>
+				<path d="m615 425v184"/>
+				<path d="m575 409v215"/>
+				<path d="m558 544v-55"/>
+				<g stroke-dasharray="10, 2.5">
+					<path d="m136 625c-27 0-38-54-38-108 0.1-54 12-108 38-108" color="#000000" opacity=".3"/>
+					<path d="m289 625c-14 0-19-54-19-108 0.051-54 5.8-108 19-108" color="#000000" opacity=".3"/>
+					<path d="m555 625c8.5 0 12-54 12-108-0.032-54-3.6-108-12-108" color="#000000" opacity=".3"/>
+					<path d="m20 601c-19 0-26-42-26-84 0.071-42 7.9-84 26-84" color="#000000" opacity=".3"/>
+				</g>
+			</g>
+		</g>
+	</g>
+</svg>
