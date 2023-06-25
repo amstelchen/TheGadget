@@ -139,5 +139,45 @@
         {
             "shape": "ellipse"
         }
+    },
+
+    "#site_window":
+    {
+        "colours":
+         {
+             "dark_bg": "#4c5052"
+         },
+        "misc":
+        {
+            "title_bar_height": "28"
+        }
+    },
+
+    "#site_window.button":
+    {
+        "font":
+        {
+            "size": "9.5"
+        }
+     },
+ 
+     "#site_window.#buy_button":
+    {
+        "colours":
+        {
+            "normal_bg": "#35393e",
+            "hovered_bg": "#55595e"
+        },
+       "images":
+        {
+            "normal_image": {
+                "path": "thegadget/resources/images/home_icon.png"
+            }
+        },
+        "misc":
+        {
+            "shape": "ellipse"
+        }
     }
+
 }

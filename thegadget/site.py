@@ -91,15 +91,6 @@ class SiteWindow(UIWindow):
             tool_bar_top_margin +
             tool_bar_bottom_margin)
 
-        """self.page_display = UITextBox(
-            index_page,
-            Rect(
-                (0, self.page_y_start_pos),
-                self.remaining_window_size),
-            manager=manager,
-            container=self,
-            parent_element=self)"""
-
         #image_surface = load(os.path.join(resources_path, "techtree", "test_emoji.png"))
 
         img_dim = 128
@@ -188,33 +179,35 @@ class SiteWindow(UIWindow):
         #png_io.seek(0)
         #png_data = load(png_io, "png")
 
-        UIImage(
+        self.map_display = UIImage(
             relative_rect=Rect(0, 0, rem_width, rem_height),
             image_surface=png_surf,
             manager=manager,
             container=self,
             parent_element=self,
-            object_id='#tech_image')
+            object_id='#site_image')
 
-        self.rect_images = []
-        for img in range(1, len(sitedata) + 1):
-            #surface = load(os.path.join(resources_path, "techtree", 'image' + str(img) + '.png')).convert_alpha()
-            #surface = pygame.transform.smoothscale(surface, (img_dim, img_dim))
+        self.info_box = UITextBox(
+            f"Site name: {title} \n" \
+            f"Location: {sitedata[2], sitedata[3]}\n" \
+            f"Workers: {sitedata[7]}\n" \
+            f"\n{sitedata[6]}",
+            Rect(
+                (self.get_container().get_size()[0] - 425, 25 + self.page_y_start_pos),
+                (400, 250)),
+            manager=manager,
+            container=self.map_display.ui_container,
+            parent_element=self.map_display)
 
-            """UIButton(
-                relative_rect=Rect((text_rect.left, text_rect.top + 100), text_rect.size),
-                text=button_status,
-                manager=manager,
-                container=self,
-                parent_element=self,
-                object_id=f'#tech_button_{area_id}').is_enabled = button_enabled"""
-
-            """UIProgressBar(
-                relative_rect=Rect((text_rect.left, text_rect.top + 200), text_rect.size),
-                manager=manager,
-                container=self,
-                parent_element=self,
-                object_id=f'#area_progress_{area_id}').set_current_progress(progress.get(area_id))"""
+        self.buy_button = UIButton(
+            Rect(
+                (self.get_container().get_size()[0] - 425, 25 + self.page_y_start_pos + 250),
+                (48, 48)),
+            '',
+            manager=manager,
+            container=self.map_display.ui_container,
+            parent_element=self,
+            object_id='#buy_button')
 
     def process_event(self, event):
         handled = super().process_event(event)
@@ -224,20 +217,13 @@ class SiteWindow(UIWindow):
             handled = True
 
         if (event.type == pygame_gui.UI_BUTTON_PRESSED and
-                event.ui_object_id == '#research_window.#tech_button'):
+                event.ui_object_id == '#site_window.#home_button'):
             self.open_new_page('index')
             handled = True
 
-#        if (event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and
-#                event.ui_element == self.search_box):
-#            results = self.search_pages(event.text)
-#            self.create_search_results_page(results)
-#            self.open_new_page('results')
-#            handled = True
-
         if (event.type == pygame_gui.UI_BUTTON_PRESSED and
-                event.ui_object_id == '#research_window.#home_button'):
-            self.open_new_page('index')
+                event.ui_object_id == '#site_window.#buy_button'):
+            # self.open_new_page('index')
             handled = True
 
         return handled
