@@ -85,9 +85,16 @@ class SVG():
 """
         for place in self.places:
             if place[4] is not None:
+                place_id = place[0]
                 place_name = place[1]
                 cx = place[4]
                 cy = place[5]
-                markup += f'<text x="{ cx }" y="{ cy }" dx="25" class="small">{place[1]}</text>'
+                if place_id <= 3:
+                    dx = 25
+                else:
+                    dx = 15
+                if place_id == 17:
+                    dx = -110
+                markup += f'<text x="{ cx }" y="{ cy }" dx="{ dx }" class="small">{place[1]}</text>'
         return markup + "</svg>"
 

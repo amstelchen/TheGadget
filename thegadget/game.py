@@ -72,14 +72,14 @@ class Game():
         dates_data = loader.load_table_data("Dates", "ORDER BY event_date")
         people_data = loader.load_table_data("People")
         places_data = loader.load_table_data("Places", "WHERE cx IS NOT NULL")
-        buildings_data = loader.load_table_data("Buildings", "WHERE coords_polygon IS NOT NULL")
+        buildings_data = loader.load_table_data("Buildings", "WHERE coords_polygon IS NOT NULL and name NOT LIKE '%Mine%'")
         tech_data = loader.load_table_data("Projects")
         intel_data = loader.load_table_data("People", "WHERE espionage == 1")
         logging.debug(f"Loaded \
             {len(dates_data)} dates, \
             {len(people_data)} people, \
             {len(places_data)} places, \
-            {len(buildings_data)}.")
+            {len(buildings_data)} buildings.")
 
         image_count1 = self.load_images(dates_data, 4, None, 420, 'events')
         image_count2 = self.load_images(people_data, 1, '.png', 200, None)
@@ -142,7 +142,7 @@ class Game():
         self.surface_pos = pygame.image.load(svg_file_pos)
 
         svg_string = SVG(places_data).create_markup()
-        svg_file_div = os.path.join(os.path.dirname(__file__), "svgtest.svg")
+        # svg_file_div = os.path.join(os.path.dirname(__file__), "svgtest.svg")
         logging.debug("Images loaded.")
 
         #self.surface_div = pygame.image.load(svg_file_div)
@@ -242,7 +242,7 @@ class Game():
                     ignore_click = False
                     pos = pygame.mouse.get_pos()
                     x, y = pos
-                    if x > 960:
+                    if x > 1010:
                         # continue
                         ignore_click = True
                     logging.debug(f"MOUSEBUTTONUP at {pos}")
@@ -250,9 +250,9 @@ class Game():
                     nearest = min(places_tup, key=lambda point: (point[0] - pos[0])**2 + (point[1] - pos[1])**2)
                     found_place = places_data[places_tup.index(nearest)]
                     zoom_level = found_place[8]
+                    logging.debug(f"Found {found_place[1]} at {nearest}, {found_place[2]},{found_place[3]}")
                     # buildings = [b[4] for b in buildings_data if b[2] == found_place[0]]
                     buildings = [mapping(loads(b[4]))['coordinates'][0] for b in buildings_data if b[2] == found_place[0]]
-                    logging.debug(f"Found {found_place[1]} at {nearest}, {found_place[2]},{found_place[3]}")
                     logging.debug(f"Buildings: {buildings}")
                     try:
                         # if not self.guiopedia_window.alive():

@@ -198,3 +198,18 @@ select b.building_id, ST_AsText(coords_text), GeometryType(b.coords_polygon) fro
 update Places set workers =
 ABS(RANDOM())%(8500-250) + 250
 where workers IS NULL
+
+select p.place_id, p.name, b.building_id, b.name  from Buildings b, places p
+where b.place_id = p.place_id 
+order by b.place_id 
+
+select p.place_id, p.name, b.building_id, b.name  from places p
+left join Buildings b
+on b.place_id = p.place_id 
+where b.building_id is null and p.place_id not in (8, 9)
+order by p.place_id 
+
+select * from Buildings b
+WHERE coords_polygon IS NOT NULL and name NOT LIKE '%Mine%'
+
+

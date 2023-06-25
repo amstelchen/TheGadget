@@ -16,8 +16,8 @@ df = pd.DataFrame(dates_data)
 df['date_column'] = pd.to_datetime(df[1])
 
 # Extract year and week from the 'date_column'
-df['year'] = df['date_column'].dt.year
-df['week'] = df['date_column'].dt.week
+df['year'] = df['date_column'].dt.isocalendar().year
+df['week'] = df['date_column'].dt.isocalendar().week
 
 # Group the data by year and week
 grouped = df.groupby(['year', 'week']).size().reset_index(name='count')
