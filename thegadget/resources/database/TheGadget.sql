@@ -212,4 +212,8 @@ order by p.place_id
 select * from Buildings b
 WHERE coords_polygon IS NOT NULL and name NOT LIKE '%Mine%'
 
-
+CREATE TABLE Deaths (
+  date_id INTEGER PRIMARY KEY,
+  event_date DATE,
+  description TEXT
+, desc_long TEXT, image TEXT);
