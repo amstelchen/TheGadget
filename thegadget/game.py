@@ -70,20 +70,24 @@ class Game():
         data_file = os.path.join(resources_path, 'database', PROGNAME + ".db")
         loader = Data(data_file)
         dates_data = loader.load_table_data("Dates", "ORDER BY event_date")
+        deaths_data = loader.load_table_data("Deaths", "ORDER BY event_date")
         people_data = loader.load_table_data("People")
         places_data = loader.load_table_data("Places", "WHERE cx IS NOT NULL")
         buildings_data = loader.load_table_data("Buildings", "WHERE coords_polygon IS NOT NULL and name NOT LIKE '%Mine%'")
         tech_data = loader.load_table_data("Projects")
         intel_data = loader.load_table_data("People", "WHERE espionage == 1")
-        logging.debug(f"Loaded \
-            {len(dates_data)} dates, \
-            {len(people_data)} people, \
-            {len(places_data)} places, \
-            {len(buildings_data)} buildings.")
+        logging.debug(f"Loaded "\
+            f"{len(dates_data)} dates, "\
+            f"{len(people_data)} people, "\
+            f"{len(places_data)} places, "\
+            f"{len(buildings_data)} buildings, "\
+            f"{len(tech_data)} projects, "\
+            f"{len(deaths_data)} death dates.")
 
         image_count1 = self.load_images(dates_data, 4, None, 420, 'events')
         image_count2 = self.load_images(people_data, 1, '.png', 200, None)
         image_count3 = self.load_images(intel_data, 1, '.png', 200, None)
+        image_count4 = self.load_images(deaths_data, 4, None, 420, 'events')
         logging.debug(f"Loaded images: {image_count1} dates, {image_count2} people.") # , {len(places_data)} places.")
 
         # Initialize Pygame, now handled in main()
@@ -423,6 +427,18 @@ class Game():
                             logging.debug(f"No date set in record {date_event[0] = }, skipping.")
                             break
 
+                    for death_event in deaths_data:
+                        # logging.debug(date_event)
+                        try:
+                            if datetime.datetime.combine(self.stats.current_date, datetime.time(0, 0)) < datetime.datetime.strptime(death_event[1], "%Y-%m-%d"):
+                                logging.debug(f"next death_event {death_event[1]}")
+                                date_diff = (datetime.datetime.combine(self.stats.current_date, datetime.time(0, 0)) - datetime.datetime.strptime(death_event[1], "%Y-%m-%d")).days * -1
+                                logging.debug(f"{date_diff = }")
+                                break
+                        except TypeError:
+                            logging.debug(f"No date set in record {death_event[0] = }, skipping.")
+                            break
+
                     for people_event in people_data:
                         # logging.debug(people_event)
                         try:
@@ -476,6 +492,26 @@ class Game():
                                 #self.ani_gif = None
 
                             eventImage = date_event[5]
+                            self.image = UIImage(
+                                relative_rect=pygame.Rect(
+                                    (10, 10),
+                                    (420, 420 // 1.3)),
+                                image_surface=eventImage,
+                                manager=self.manager,
+                                container=self.event_window,
+                                parent_element=self.event_window)
+
+                    for death_event in deaths_data:
+                        if self.stats.current_date.strftime("%Y-%m-%d") == death_event[1]:
+                            logging.debug("Death event found!")
+                            self.text_hist = f"{death_event[1]}\n{death_event[2]}"
+                            self.subtext = f"{death_event[3]}"
+
+                            self.event_window = EventWindow(
+                                self.manager, f"Death of {death_event[2]}", (self.window.get_width() // 2 - 400, self.window.get_height() // 2 - 200), (800, 400),
+                            text=f"{death_event[1]}\n\n{death_event[3]}")
+
+                            eventImage = death_event[5]
                             self.image = UIImage(
                                 relative_rect=pygame.Rect(
                                     (10, 10),
