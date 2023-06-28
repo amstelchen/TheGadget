@@ -1,4 +1,4 @@
-VERSION = "0.9.1"
+VERSION = "0.9.2"
 PROGNAME = "TheGadget"
 FULLNAME = "The Gadget"
 __appname__ = FULLNAME
