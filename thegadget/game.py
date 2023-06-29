@@ -51,6 +51,10 @@ status_window_height = 150
 
 # logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 logging.basicConfig(format='%(levelname)s:%(asctime)s:%(filename)s:%(lineno)d:%(message)s', level=logging.DEBUG)
+logging.captureWarnings(False)
+if not sys.warnoptions:
+    import warnings
+    warnings.simplefilter("ignore")
 
 
 class Game():
